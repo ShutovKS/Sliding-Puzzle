@@ -146,6 +146,9 @@ obj/
 [Rr]elease/ 
 Ankh.NoLoad
 
+#Rider
+.idea/
+
 #Tooling
 _ReSharper*/
 .resharper
