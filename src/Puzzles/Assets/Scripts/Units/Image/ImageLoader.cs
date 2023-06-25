@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SimpleFileBrowser;
@@ -11,18 +12,7 @@ namespace Units.Image
 {
     public static class ImageLoader
     {
-        public static async Task<Texture2D> GetCustomImage()
-        {
-            var patch = await GetFilePatchFromFileBrowser();
-
-            if (patch is null) return null;
-
-            var loadImage = GetImageByPath(patch);
-
-            return loadImage;
-        }
-
-        private static async Task<string> GetFilePatchFromFileBrowser()
+        public static async Task<string> GetFilePatchFromFileBrowser()
         {
             var filter = new[] { new FileBrowser.Filter("Image", "jpg", "jpeg", "png") };
 
@@ -48,9 +38,9 @@ namespace Units.Image
             return path;
         }
 
-        private static Texture2D GetImageByPath(string imagePath)
+        public static Texture2D GetImageByPath(string imagePath)
         {
-            var file = System.IO.File.ReadAllBytes(imagePath);
+            var file = File.ReadAllBytes(imagePath);
 
             var loadImage = new Texture2D(2, 2);
 

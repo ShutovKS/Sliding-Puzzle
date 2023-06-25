@@ -6,25 +6,25 @@ using UnityEngine;
 
 namespace Units.Image
 {
-    public static class ImageSeparation
+    public static class ImageCutter
     {
-        public static Texture2D[,] GetSlicedImagePartially(
+        public static Texture2D[,] CutImage(
             Texture2D texture2D,
-            ImageSeparationType type = ImageSeparationType.Automatic,
+            ImageCutterType type = ImageCutterType.Automatic,
             int[] parts = null)
         {
             parts ??= new[] { 3, 3 };
 
             return type switch
             {
-                ImageSeparationType.Automatic => SeparationAutomatic(texture2D),
-                ImageSeparationType.NumberOfParts => SeparationToNumberOfParts(texture2D, parts[0], parts[1]),
-                ImageSeparationType.PartSize => SeparationToPartSize(texture2D, parts[0], parts[1]),
+                ImageCutterType.Automatic => CutterAutomatic(texture2D),
+                ImageCutterType.NumberOfParts => CutterToNumberOfParts(texture2D, parts[0], parts[1]),
+                ImageCutterType.PartSize => CutterToPartSize(texture2D, parts[0], parts[1]),
                 _ => null
             };
         }
 
-        private static Texture2D[,] SeparationAutomatic(Texture2D sourceImage)
+        private static Texture2D[,] CutterAutomatic(Texture2D sourceImage)
         {
             var imageWidth = sourceImage.width;
             var imageHeight = sourceImage.height;
@@ -35,12 +35,12 @@ namespace Units.Image
             var numPiecesX = imageWidth / puzzlePieceWidth;
             var numPiecesY = imageHeight / puzzlePieceHeight;
 
-            var puzzlePieces = Separation(sourceImage, puzzlePieceWidth, puzzlePieceHeight, numPiecesX, numPiecesY);
+            var puzzlePieces = Cutter(sourceImage, puzzlePieceWidth, puzzlePieceHeight, numPiecesX, numPiecesY);
 
             return puzzlePieces;
         }
 
-        private static Texture2D[,] SeparationToNumberOfParts(Texture2D sourceImage, int numPiecesX, int numPiecesY)
+        private static Texture2D[,] CutterToNumberOfParts(Texture2D sourceImage, int numPiecesX, int numPiecesY)
         {
             var imageWidth = sourceImage.width;
             var imageHeight = sourceImage.height;
@@ -48,12 +48,12 @@ namespace Units.Image
             var puzzlePieceWidth = imageWidth / numPiecesX;
             var puzzlePieceHeight = imageHeight / numPiecesY;
 
-            var puzzlePieces = Separation(sourceImage, puzzlePieceWidth, puzzlePieceHeight, numPiecesX, numPiecesY);
+            var puzzlePieces = Cutter(sourceImage, puzzlePieceWidth, puzzlePieceHeight, numPiecesX, numPiecesY);
 
             return puzzlePieces;
         }
 
-        private static Texture2D[,] SeparationToPartSize(Texture2D sourceImage, int puzzlePieceWidth, int puzzlePieceHeight)
+        private static Texture2D[,] CutterToPartSize(Texture2D sourceImage, int puzzlePieceWidth, int puzzlePieceHeight)
         {
             var imageWidth = sourceImage.width;
             var imageHeight = sourceImage.height;
@@ -61,12 +61,12 @@ namespace Units.Image
             var numPiecesX = imageWidth / puzzlePieceWidth;
             var numPiecesY = imageHeight / puzzlePieceHeight;
 
-            var puzzlePieces = Separation(sourceImage, puzzlePieceWidth, puzzlePieceHeight, numPiecesX, numPiecesY);
+            var puzzlePieces = Cutter(sourceImage, puzzlePieceWidth, puzzlePieceHeight, numPiecesX, numPiecesY);
 
             return puzzlePieces;
         }
 
-        private static Texture2D[,] Separation(Texture2D sourceImage, int puzzlePieceWidth, int puzzlePieceHeight,
+        private static Texture2D[,] Cutter(Texture2D sourceImage, int puzzlePieceWidth, int puzzlePieceHeight,
             int numPiecesX, int numPiecesY)
         {
             var puzzlePieces = new Texture2D[numPiecesX, numPiecesY];

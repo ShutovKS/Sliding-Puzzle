@@ -1,6 +1,6 @@
 ﻿namespace Units.Image
 {
-    public enum ImageSeparationType
+    public enum ImageCutterType
     {
         Automatic,
         NumberOfParts,
