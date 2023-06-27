@@ -39,9 +39,9 @@ namespace Units.ProcessControl
                 {
                     Debug.Log("Win");
                     foreach (var (gameObject, _) in buttonsInstanceDictionary)
-                    {
-                        gameObject.SetActive(true);
-                    }
+                        gameObject.SetActive(false);
+
+                    //TODO: Created Full Image
                 });
         }
 
@@ -72,46 +72,37 @@ namespace Units.ProcessControl
             var random = new Random();
             var rowCount = positions.GetLength(0);
             var colCount = positions.GetLength(1);
+            var countSort = (int)Math.Pow(rowCount * colCount, 3);
 
-            var count = (int)Math.Pow(rowCount * colCount, 1.5);
+            (int x, int y) oldPositions = (colCount - 1, rowCount - 1);
 
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < countSort; i++)
             {
-                var flag = 0;
-                (int x, int y) index1 = (0, 0);
-                while (flag < 5)
+                (int x, int y) newPosition = (0, 0);
+                if (random.Next(0, 2) == 1)
                 {
-                    flag++;
-                    index1 = (random.Next(0, rowCount), random.Next(0, colCount));
-
-                    if (index1 == (rowCount - 1, colCount - 1)) continue;
-
-                    break;
+                    newPosition.x = random.Next(0, 2) == 1 ? 1 : -1;
                 }
-                
-                if (flag == 5) continue;
-                Debug.Log(index1);
-                flag = 0;
-                (int x, int y) index2 = (0, 0);
-                while (flag < 5)
+                else
                 {
-                    flag++;
-                    index2 = (random.Next(index1.x - 1, index1.x + 2), random.Next(index1.y - 1, index1.y + 2));
-
-                    if (index2 == index1 ||
-                        index1 == (rowCount - 1, colCount - 1) ||
-                        index2.x < 0 || index2.x >= rowCount ||
-                        index2.y < 0 || index2.y >= colCount)
-                        continue;
-
-                    break;
+                    newPosition.y = random.Next(0, 2) == 1 ? 1 : -1;
                 }
 
-                if (flag == 5) continue;
-                Debug.Log(index2);
+                newPosition.x += oldPositions.x;
+                newPosition.y += oldPositions.y;
 
-                (positions[index1.y, index1.x], positions[index2.y, index2.x]) =
-                    (positions[index2.y, index2.x], positions[index1.y, index1.x]);
+                if (newPosition.x < 0 ||
+                    newPosition.y < 0 ||
+                    newPosition.x >= colCount ||
+                    newPosition.y >= rowCount)
+                    continue;
+
+                Debug.Log($"{oldPositions} => {newPosition}");
+
+                (positions[oldPositions.y, oldPositions.x], positions[newPosition.y, newPosition.x]) = (
+                    positions[newPosition.y, newPosition.x], positions[oldPositions.y, oldPositions.x]);
+
+                oldPositions = newPosition;
             }
 
             return positions;
