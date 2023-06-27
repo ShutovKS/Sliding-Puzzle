@@ -41,7 +41,7 @@ namespace Units.ProcessControl
                     foreach (var (gameObject, _) in buttonsInstanceDictionary)
                         gameObject.SetActive(false);
 
-                    //TODO: Created Full Image
+                    CreatedFullImage(pathToImage);
                 });
         }
 
@@ -271,6 +271,26 @@ namespace Units.ProcessControl
             button.GetComponentInChildren<Text>().text = $"{newPosition}\n{targetPosition}";
 
             buttonsGo[button] = newPosition;
+        }
+
+        private static void CreatedFullImage(
+            string pathToImage)
+        {
+            var texture2D = new Texture2D(2, 2);
+            var bytes = File.ReadAllBytes(pathToImage);
+            texture2D.LoadImage(bytes);
+
+            var resources = new DefaultControls.Resources();
+
+            var canvas = DefaultControls.CreatePanel(resources);
+            canvas.AddComponent<Canvas>();
+            canvas.AddComponent<CanvasScaler>();
+            canvas.AddComponent<GraphicRaycaster>();
+            canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(
+                texture2D,
+                new Rect(0, 0, texture2D.width, texture2D.height),
+                new Vector2(0.5f, 0.5f));
         }
 
         #endregion
