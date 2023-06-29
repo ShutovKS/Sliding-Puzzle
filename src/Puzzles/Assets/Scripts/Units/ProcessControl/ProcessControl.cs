@@ -72,7 +72,7 @@ namespace Units.ProcessControl
             var random = new Random();
             var rowCount = positions.GetLength(0);
             var colCount = positions.GetLength(1);
-            var countSort = (int)Math.Pow(rowCount * colCount, 3);
+            var countSort = (int)Math.Pow(rowCount * colCount, 2);
 
             (int x, int y) oldPositions = (colCount - 1, rowCount - 1);
 
@@ -96,8 +96,6 @@ namespace Units.ProcessControl
                     newPosition.x >= colCount ||
                     newPosition.y >= rowCount)
                     continue;
-
-                Debug.Log($"{oldPositions} => {newPosition}");
 
                 (positions[oldPositions.y, oldPositions.x], positions[newPosition.y, newPosition.x]) = (
                     positions[newPosition.y, newPosition.x], positions[oldPositions.y, oldPositions.x]);
@@ -150,8 +148,10 @@ namespace Units.ProcessControl
 
                 buttonsInstanceDictionary.Add(buttonGo, position);
 
+#if DEBUG || UNITY_EDITOR
                 buttonGo.GetComponentInChildren<Text>().text = $"{position.x} {position.y}";
-
+#endif
+                
                 oldButtonInstance = buttonGo;
             }
 
@@ -268,7 +268,9 @@ namespace Units.ProcessControl
             rectTransform.offsetMin = new Vector2(0, 0);
             rectTransform.offsetMax = new Vector2(0, 0);
 
+#if DEBUG || UNITY_EDITOR
             button.GetComponentInChildren<Text>().text = $"{newPosition}\n{targetPosition}";
+#endif
 
             buttonsGo[button] = newPosition;
         }
