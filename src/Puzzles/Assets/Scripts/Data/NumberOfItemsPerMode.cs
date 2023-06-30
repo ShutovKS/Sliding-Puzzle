@@ -6,8 +6,8 @@ namespace Data.PlayerPrefs
     {
         public readonly static Dictionary<string, int> OfItemsPerMode = new()
         {
-            [GameModesTypes.HARDCORE_MODE] = 7,
-            [GameModesTypes.NORMAL_MODE] = 5,
+            [GameModesTypes.HARDCORE_MODE] = 6,
+            [GameModesTypes.NORMAL_MODE] = 4,
             [GameModesTypes.EASY_MODE] = 3
         };
     }

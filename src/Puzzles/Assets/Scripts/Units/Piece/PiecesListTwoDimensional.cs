@@ -31,13 +31,11 @@ namespace Units.Piece
 
         private UnityAction _onAllPartsInPlace;
 
-        public bool TryMovePiece(Vector2Int currentPosition, out Vector2Int newPosition, out Vector2Int targetPosition)
+        public bool TryMovePiece(Vector2Int currentPosition, out Vector2Int newPosition)
         {
             var x = currentPosition.x;
             var y = currentPosition.y;
             if (_grid[y, x] == null) throw new Exception($"Piece not found {x}/{y}");
-
-            targetPosition = _grid[y, x].TargetPosition;
 
             for (var tempY = y - 1; tempY <= y + 1; tempY++)
             for (var tempX = x - 1; tempX <= x + 1; tempX++)
@@ -54,7 +52,6 @@ namespace Units.Piece
                 _grid[tempY, tempX].CurrentPosition = newPosition;
 
                 CheckOnPiece(_grid[tempY, tempX]);
-
                 return true;
             }
 
@@ -75,11 +72,16 @@ namespace Units.Piece
         public void RemovePiece([CanBeNull] Piece piece)
         {
             if (piece == null) throw new Exception("Piece is null");
-            var x = piece.CurrentPosition.x;
-            var y = piece.CurrentPosition.y;
+            RemovePiece(piece.CurrentPosition);
+        }
+
+        public void RemovePiece(Vector2Int position)
+        {
+            var x = position.x;
+            var y = position.y;
             if (_grid[y, x] == null) throw new Exception("Piece not found");
+            _partsOutOfPlace.Remove(_grid[y, x]);
             _grid[y, x] = null;
-            _partsOutOfPlace.Remove(piece);
         }
 
         public void RegisterOnAllPartsInPlace(UnityAction action)
@@ -103,7 +105,9 @@ namespace Units.Piece
         private void CheckAllPartsInPlace()
         {
             if (_partsOutOfPlace.Count == 0)
+            {
                 _onAllPartsInPlace?.Invoke();
+            }
         }
     }
 }

@@ -11,15 +11,13 @@ namespace Units.Image
         public static Texture2D[,] CutImage(
             Texture2D texture2D,
             ImageCutterType type = ImageCutterType.Automatic,
-            int[] parts = null)
+            int partsX = 3, int partsY = 3)
         {
-            parts ??= new[] { 3, 3 };
-
             return type switch
             {
                 ImageCutterType.Automatic => CutterAutomatic(texture2D),
-                ImageCutterType.NumberOfParts => CutterToNumberOfParts(texture2D, parts[0], parts[1]),
-                ImageCutterType.PartSize => CutterToPartSize(texture2D, parts[0], parts[1]),
+                ImageCutterType.NumberOfParts => CutterToNumberOfParts(texture2D, partsX, partsY),
+                ImageCutterType.PartSize => CutterToPartSize(texture2D, partsX, partsY),
                 _ => null
             };
         }

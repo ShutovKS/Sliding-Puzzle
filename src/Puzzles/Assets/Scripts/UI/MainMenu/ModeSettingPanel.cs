@@ -4,12 +4,14 @@ using UnityEngine.UI;
 
 namespace UI.MainMenu
 {
-    public class GameplaySettingPanelController : MonoBehaviour
+    public class ModeSettingPanel : MonoBehaviour
     {
         [SerializeField] private Button _hardcoreButton;
         [SerializeField] private Button _normalButton;
         [SerializeField] private Button _easyButton;
         [SerializeField] private Button _backButton;
+        
+        [SerializeField] private GameObject _modeSettingPanel;
 
         public void RegisterHardcoreButtonListener(params UnityAction[] actions)
         {
@@ -49,6 +51,11 @@ namespace UI.MainMenu
             _normalButton.onClick.RemoveAllListeners();
             _easyButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
+        }
+        
+        public void SetActive(bool isActive)
+        {
+            _modeSettingPanel.SetActive(isActive);
         }
     }
 }
