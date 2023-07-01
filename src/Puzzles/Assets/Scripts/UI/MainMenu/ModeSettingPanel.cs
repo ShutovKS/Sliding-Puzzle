@@ -1,6 +1,10 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+
+#endregion
 
 namespace UI.MainMenu
 {
@@ -10,7 +14,7 @@ namespace UI.MainMenu
         [SerializeField] private Button _normalButton;
         [SerializeField] private Button _easyButton;
         [SerializeField] private Button _backButton;
-        
+
         [SerializeField] private GameObject _modeSettingPanel;
 
         public void RegisterHardcoreButtonListener(params UnityAction[] actions)
@@ -52,7 +56,7 @@ namespace UI.MainMenu
             _easyButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
         }
-        
+
         public void SetActive(bool isActive)
         {
             _modeSettingPanel.SetActive(isActive);

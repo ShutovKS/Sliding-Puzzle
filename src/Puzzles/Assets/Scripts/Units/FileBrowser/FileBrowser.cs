@@ -1,5 +1,9 @@
-﻿using System.Threading;
+﻿#region
+
+using System.Threading;
 using System.Threading.Tasks;
+
+#endregion
 
 namespace Units.FileBrowser
 {
@@ -7,7 +11,6 @@ namespace Units.FileBrowser
     {
         public static async Task<string> GetFilePatchFromFileBrowser()
         {
-            
             var filter = new[] { new SimpleFileBrowser.FileBrowser.Filter("Image", "jpg", "jpeg", "png") };
 
             SimpleFileBrowser.FileBrowser.SetFilters(false, filter);

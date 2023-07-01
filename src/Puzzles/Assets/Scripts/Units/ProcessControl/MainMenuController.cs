@@ -1,77 +1,61 @@
-using Data.PlayerPrefs;
-using Units.FileBrowser;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
+#region
 
-namespace UI.MainMenu
+using Data.GameDifficulty;
+using Data.GameType;
+using Data.PlayerPrefs;
+using UI.MainMenu;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
+#endregion
+
+namespace Units.ProcessControl
 {
     public class MainMenuController : MonoBehaviour
     {
         [SerializeField] private MainPanel _mainPanel;
         [SerializeField] private ModeSettingPanel _modeSettingPanel;
-        
+
         private void Start()
         {
             MainPanelRegisterAction();
         }
 
-        #region Main Panel
-
         private void MainPanelRegisterAction()
         {
-            _mainPanel.RegisterStartGameDefaultButtonListener(StartGameDefault);
-            _mainPanel.RegisterStartGameCustomButtonListener(StartGameCustom);
+            UnityAction generalEventsForDefault = BackToMainPanel;
+            generalEventsForDefault += StartGame;
+            generalEventsForDefault += () => RegisterGameType(GameTypes.DEFAULT_GAME);
+            _mainPanel.RegisterStartGameDefaultButtonListener(() => StartGameClick(generalEventsForDefault));
+
+            UnityAction generalEventsForCustom = BackToMainPanel;
+            generalEventsForCustom += OpenFileBrowser;
+            generalEventsForCustom += () => RegisterGameType(GameTypes.CUSTOM_GAME);
+            _mainPanel.RegisterStartGameCustomButtonListener(() => StartGameClick(generalEventsForCustom));
+
             _mainPanel.RegisterExitButtonListener(ExitGame);
         }
 
-        private void StartGameDefault()
+        private void StartGameClick(UnityAction generalEvent)
         {
             _mainPanel.SetActive(false);
             _modeSettingPanel.SetActive(true);
             _modeSettingPanel.RemoveListeners();
 
+            _modeSettingPanel.RegisterHardcoreButtonListener(
+                () => RegisterGameDifficulties(GameDifficulties.HARDCORE_MODE),
+                generalEvent);
 
-            _modeSettingPanel.RegisterHardcoreButtonListener(HardcoreMode, StartGame);
-            _modeSettingPanel.RegisterNormalButtonListener(NormalMode, StartGame);
-            _modeSettingPanel.RegisterEasyButtonListener(EasyMode, StartGame);
+            _modeSettingPanel.RegisterNormalButtonListener(
+                () => RegisterGameDifficulties(GameDifficulties.NORMAL_MODE),
+                generalEvent);
+
+            _modeSettingPanel.RegisterEasyButtonListener(
+                () => RegisterGameDifficulties(GameDifficulties.EASY_MODE),
+                generalEvent);
+
             _modeSettingPanel.RegisterBackButtonListener(BackToMainPanel);
-        }
-
-        private void StartGameCustom()
-        {
-            _mainPanel.SetActive(false);
-            _modeSettingPanel.SetActive(true);
-            _modeSettingPanel.RemoveListeners();
-
-            _modeSettingPanel.RegisterHardcoreButtonListener(HardcoreMode, OpenFileBrowser);
-            _modeSettingPanel.RegisterNormalButtonListener(NormalMode, OpenFileBrowser);
-            _modeSettingPanel.RegisterEasyButtonListener(EasyMode, OpenFileBrowser);
-            _modeSettingPanel.RegisterBackButtonListener(BackToMainPanel);
-        }
-
-        private void ExitGame()
-        {
-            Application.Quit();
-        }
-
-        #endregion
-
-        #region Gameplay Setting Panel
-
-        private void HardcoreMode()
-        {
-            PlayerPrefs.SetString(KeysForPlayerPrefs.DIFFICULTY_LEVEL_KEY, GameModesTypes.HARDCORE_MODE);
-        }
-
-        private void NormalMode()
-        {
-            PlayerPrefs.SetString(KeysForPlayerPrefs.DIFFICULTY_LEVEL_KEY, GameModesTypes.NORMAL_MODE);
-        }
-
-        private void EasyMode()
-        {
-            PlayerPrefs.SetString(KeysForPlayerPrefs.DIFFICULTY_LEVEL_KEY, GameModesTypes.EASY_MODE);
         }
 
         private void BackToMainPanel()
@@ -80,13 +64,9 @@ namespace UI.MainMenu
             _modeSettingPanel.SetActive(false);
         }
 
-        #endregion
-
-        #region Other
-
         private async void OpenFileBrowser()
         {
-            var path = await FileBrowser.GetFilePatchFromFileBrowser();
+            var path = await FileBrowser.FileBrowser.GetFilePatchFromFileBrowser();
 
             if (path == null) return;
 
@@ -94,11 +74,24 @@ namespace UI.MainMenu
             StartGame();
         }
 
+        private void RegisterGameType(string gameType)
+        {
+            PlayerPrefs.SetString(KeysForPlayerPrefs.GAME_TYPE_KEY, gameType);
+        }
+
+        private void RegisterGameDifficulties(string gameDifficulties)
+        {
+            PlayerPrefs.SetString(KeysForPlayerPrefs.DIFFICULTY_LEVEL_KEY, gameDifficulties);
+        }
+
         private void StartGame()
         {
             SceneManager.LoadScene("FoldingThePuzzle");
         }
 
-        #endregion
+        private void ExitGame()
+        {
+            Application.Quit();
+        }
     }
 }

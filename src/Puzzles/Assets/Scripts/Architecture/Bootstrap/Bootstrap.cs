@@ -1,5 +1,9 @@
+#region
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+#endregion
 
 namespace Architecture.Bootstrap
 {

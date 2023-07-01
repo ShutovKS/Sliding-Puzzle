@@ -24,10 +24,11 @@ namespace Units.Piece
                 _grid[y, x] = null;
         }
 
-        private readonly int _height;
-        private readonly int _width;
         private readonly Piece[,] _grid;
+
+        private readonly int _height;
         private readonly List<Piece> _partsOutOfPlace;
+        private readonly int _width;
 
         private UnityAction _onAllPartsInPlace;
 
