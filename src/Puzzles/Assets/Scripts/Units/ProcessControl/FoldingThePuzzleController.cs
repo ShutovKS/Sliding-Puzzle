@@ -8,6 +8,7 @@ using Units.Image;
 using Units.Piece;
 using Units.PuzzleGenerator;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 #endregion
 
@@ -17,6 +18,7 @@ namespace Units.ProcessControl
     {
         [SerializeField] private PartsUI _partsUI;
         [SerializeField] private FullImageUI _fullImageUI;
+        [SerializeField] private ButtonsUI _buttonsUI;
 
         private void Awake()
         {
@@ -54,6 +56,8 @@ namespace Units.ProcessControl
 
             RemovePart(emptyPosition);
 
+            _buttonsUI.RegisterExitButton(ExitInMainMenu);
+
             return;
 
             void MovePart(Vector2Int currentPosition)
@@ -74,6 +78,11 @@ namespace Units.ProcessControl
             {
                 _partsUI.RemovePart(position);
                 piecesListTwoDimensional.RemovePiece(position);
+            }
+
+            void ExitInMainMenu()
+            {
+                SceneManager.LoadScene("MainMenu");
             }
         }
 
