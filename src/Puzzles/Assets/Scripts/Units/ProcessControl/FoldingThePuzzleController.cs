@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using Data.GameDifficulty;
 using Data.GameType;
 using Data.PlayerPrefs;
@@ -16,72 +15,77 @@ namespace Units.ProcessControl
 {
     public class FoldingThePuzzleController : MonoBehaviour
     {
-        [SerializeField] private PartsPanel _partsPanel;
+        [SerializeField] private PartsUI _partsUI;
+        [SerializeField] private FullImageUI _fullImageUI;
 
         private void Awake()
         {
-            var gameType = PlayerPrefs.GetString(KeysForPlayerPrefs.GAME_TYPE_KEY);
-            var pathToImage = PlayerPrefs.GetString(KeysForPlayerPrefs.IMAGE_PATH_KEY);
             var difficultyLevel = PlayerPrefs.GetString(KeysForPlayerPrefs.DIFFICULTY_LEVEL_KEY);
-            var elementsAmount = NumberOfItemsPerDifficulties.OfItemsPerMode[difficultyLevel];
-            var emptyPosition = new Vector2Int(elementsAmount - 1, 0);
+            var partsAmount = NumberOfItemsPerDifficulties.GetPartsCountPerMode[difficultyLevel];
+            var emptyPosition = new Vector2Int(partsAmount - 1, 0);
+            var currentPositions = GenerationPositions.GetRandomPositions(partsAmount, emptyPosition);
 
-            var currentPositions = GenerationPositions.GetRandomPositions(elementsAmount, emptyPosition);
+            var piecesListTwoDimensional = InitialisePiecesListTwoDimensional(currentPositions);
+            piecesListTwoDimensional.RegisterOnAllPartsInPlace(EnableFullImagePanel);
 
-            var piecesListTwoDimensional = InitialisePiecesListTwoDimensional(currentPositions, elementsAmount);
+            _partsUI.CreatedParts(partsAmount);
+            _partsUI.RegisteringButtonsEvents(MovePart);
 
-            _partsPanel.CreatedPiecesVisual(elementsAmount);
-
+            var gameType = PlayerPrefs.GetString(KeysForPlayerPrefs.GAME_TYPE_KEY);
             switch (gameType)
             {
                 case GameTypes.DEFAULT_GAME:
-                    _partsPanel.FillWithNumbers(currentPositions);
+                    _partsUI.FillWithPartsOfCutsNumbers(currentPositions);
 
                     break;
                 case GameTypes.CUSTOM_GAME:
+                    var pathToImage = PlayerPrefs.GetString(KeysForPlayerPrefs.IMAGE_PATH_KEY);
                     var texture2D = ImageLoader.GetImageByPath(pathToImage);
-
                     var textures2D = ImageCutter.CutImage(
                         texture2D,
                         ImageCutterType.NumberOfParts,
-                        elementsAmount,
-                        elementsAmount);
+                        partsAmount,
+                        partsAmount);
 
-                    _partsPanel.FillWithPiecesOfCutsImages(textures2D, currentPositions);
-                    _partsPanel.CreatedFullImage(texture2D);
+                    _partsUI.FillWithPartsOfCutsImages(textures2D, currentPositions);
+                    _fullImageUI.CreatedFullImage(texture2D);
                     break;
             }
 
-            piecesListTwoDimensional.RegisterOnAllPartsInPlace(
-                () =>
+            RemovePart(emptyPosition);
+
+            return;
+
+            void MovePart(Vector2Int currentPosition)
+            {
+                if (piecesListTwoDimensional.TryMovePiece(currentPosition, out var newPosition))
                 {
-                    _partsPanel.FullImagePanelSetActive(true);
-                    _partsPanel.PartsPanelSetActive(false);
-                });
+                    _partsUI.MovePart(currentPosition, newPosition, partsAmount);
+                }
+            }
 
-            _partsPanel.FullImagePanelSetActive(false);
-            _partsPanel.PartsPanelSetActive(true);
-            _partsPanel.RegisteringButtonsEvents(
-                currentPosition =>
-                {
-                    if (!piecesListTwoDimensional.TryMovePiece(currentPosition, out var newPosition)) return;
+            void EnableFullImagePanel()
+            {
+                _fullImageUI.PanelSetActive(true);
+                _partsUI.PanelSetActive(false);
+            }
 
-                    _partsPanel.MovePrice(currentPosition, newPosition, elementsAmount);
-                });
-
-            _partsPanel.RemovePrice(emptyPosition);
-            piecesListTwoDimensional.RemovePiece(emptyPosition);
+            void RemovePart(Vector2Int position)
+            {
+                _partsUI.RemovePart(position);
+                piecesListTwoDimensional.RemovePiece(position);
+            }
         }
 
-        private static PiecesListTwoDimensional InitialisePiecesListTwoDimensional(Vector2Int[,] currentsPositions,
-            int elementsAmount)
+        private PiecesListTwoDimensional InitialisePiecesListTwoDimensional(Vector2Int[,] currentPositions)
         {
-            var piecesListTwoDimensional = new PiecesListTwoDimensional(elementsAmount, elementsAmount);
+            var partsAmount = currentPositions.GetLength(0);
+            var piecesListTwoDimensional = new PiecesListTwoDimensional(partsAmount, partsAmount);
 
-            for (var y = 0; y < elementsAmount; y++)
-            for (var x = 0; x < elementsAmount; x++)
+            for (var y = 0; y < partsAmount; y++)
+            for (var x = 0; x < partsAmount; x++)
             {
-                var currentPosition = currentsPositions[y, x];
+                var currentPosition = currentPositions[y, x];
 
                 var targetPosition = new Vector2Int(x, y);
                 var piece = new Piece.Piece(targetPosition, currentPosition);

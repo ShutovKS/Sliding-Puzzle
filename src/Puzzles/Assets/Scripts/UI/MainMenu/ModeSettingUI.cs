@@ -1,21 +1,17 @@
-﻿#region
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
-
-#endregion
 
 namespace UI.MainMenu
 {
-    public class ModeSettingPanel : MonoBehaviour
+    public class ModeSettingUI : MonoBehaviour
     {
+        [SerializeField] private GameObject _modeSettingPanel;
         [SerializeField] private Button _hardcoreButton;
         [SerializeField] private Button _normalButton;
         [SerializeField] private Button _easyButton;
         [SerializeField] private Button _backButton;
-
-        [SerializeField] private GameObject _modeSettingPanel;
 
         public void RegisterHardcoreButtonListener(params UnityAction[] actions)
         {
@@ -57,7 +53,7 @@ namespace UI.MainMenu
             _backButton.onClick.RemoveAllListeners();
         }
 
-        public void SetActive(bool isActive)
+        public void PanelSetActive(bool isActive)
         {
             _modeSettingPanel.SetActive(isActive);
         }

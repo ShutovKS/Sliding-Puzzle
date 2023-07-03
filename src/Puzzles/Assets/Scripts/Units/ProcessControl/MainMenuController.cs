@@ -7,6 +7,7 @@ using UI.MainMenu;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 #endregion
 
@@ -14,8 +15,8 @@ namespace Units.ProcessControl
 {
     public class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private MainPanel _mainPanel;
-        [SerializeField] private ModeSettingPanel _modeSettingPanel;
+        [SerializeField] private MainUI _mainUI;
+        [SerializeField] private ModeSettingUI _modeSettingUI;
 
         private void Start()
         {
@@ -27,41 +28,41 @@ namespace Units.ProcessControl
             UnityAction generalEventsForDefault = BackToMainPanel;
             generalEventsForDefault += StartGame;
             generalEventsForDefault += () => RegisterGameType(GameTypes.DEFAULT_GAME);
-            _mainPanel.RegisterStartGameDefaultButtonListener(() => StartGameClick(generalEventsForDefault));
+            _mainUI.RegisterStartGameDefaultButtonListener(() => StartGameClick(generalEventsForDefault));
 
             UnityAction generalEventsForCustom = BackToMainPanel;
             generalEventsForCustom += OpenFileBrowser;
             generalEventsForCustom += () => RegisterGameType(GameTypes.CUSTOM_GAME);
-            _mainPanel.RegisterStartGameCustomButtonListener(() => StartGameClick(generalEventsForCustom));
+            _mainUI.RegisterStartGameCustomButtonListener(() => StartGameClick(generalEventsForCustom));
 
-            _mainPanel.RegisterExitButtonListener(ExitGame);
+            _mainUI.RegisterExitButtonListener(ExitGame);
         }
 
         private void StartGameClick(UnityAction generalEvent)
         {
-            _mainPanel.SetActive(false);
-            _modeSettingPanel.SetActive(true);
-            _modeSettingPanel.RemoveListeners();
+            _mainUI.PanelSetActive(false);
+            _modeSettingUI.PanelSetActive(true);
+            _modeSettingUI.RemoveListeners();
 
-            _modeSettingPanel.RegisterHardcoreButtonListener(
+            _modeSettingUI.RegisterHardcoreButtonListener(
                 () => RegisterGameDifficulties(GameDifficulties.HARDCORE_MODE),
                 generalEvent);
 
-            _modeSettingPanel.RegisterNormalButtonListener(
+            _modeSettingUI.RegisterNormalButtonListener(
                 () => RegisterGameDifficulties(GameDifficulties.NORMAL_MODE),
                 generalEvent);
 
-            _modeSettingPanel.RegisterEasyButtonListener(
+            _modeSettingUI.RegisterEasyButtonListener(
                 () => RegisterGameDifficulties(GameDifficulties.EASY_MODE),
                 generalEvent);
 
-            _modeSettingPanel.RegisterBackButtonListener(BackToMainPanel);
+            _modeSettingUI.RegisterBackButtonListener(BackToMainPanel);
         }
 
         private void BackToMainPanel()
         {
-            _mainPanel.SetActive(true);
-            _modeSettingPanel.SetActive(false);
+            _mainUI.PanelSetActive(true);
+            _modeSettingUI.PanelSetActive(false);
         }
 
         private async void OpenFileBrowser()

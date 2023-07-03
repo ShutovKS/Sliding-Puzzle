@@ -9,15 +9,19 @@ using UnityEngine.UI;
 
 namespace UI.FoldingThePuzzle
 {
-    public class PartsPanel : MonoBehaviour
+    public class PartsUI : MonoBehaviour
     {
         [SerializeField] private GameObject _partsPanel;
-        [SerializeField] private GameObject _fullImagePanel;
-        private Dictionary<GameObject, Vector2Int> _buttonsInstanceToVectorDictionary;
 
+        private Dictionary<GameObject, Vector2Int> _buttonsInstanceToVectorDictionary;
         private Dictionary<Vector2Int, GameObject> _vectorToButtonsInstanceDictionary;
 
-        public void CreatedPiecesVisual(int elementsAmount)
+        public void PanelSetActive(bool value)
+        {
+            _partsPanel.SetActive(value);
+        }
+
+        public void CreatedParts(int elementsAmount)
         {
             var resources = new DefaultControls.Resources();
 
@@ -56,76 +60,16 @@ namespace UI.FoldingThePuzzle
             }
         }
 
-        public void RemovePrice(Vector2Int position)
+        public void RemovePart(Vector2Int position)
         {
-            var priceInstance = _vectorToButtonsInstanceDictionary[position];
+            if (!_vectorToButtonsInstanceDictionary.TryGetValue(position, out var partInstance)) return;
 
-            Destroy(priceInstance);
-
+            Destroy(partInstance);
             _vectorToButtonsInstanceDictionary.Remove(position);
-            _buttonsInstanceToVectorDictionary.Remove(priceInstance);
+            _buttonsInstanceToVectorDictionary.Remove(partInstance);
         }
 
-        public void FillWithPiecesOfCutsImages(Texture2D[,] textures2D, Vector2Int[,] currentsPositions)
-        {
-            var elementsAmount = currentsPositions.GetLength(0);
-
-            for (var y = 0; y < elementsAmount; y++)
-            for (var x = 0; x < elementsAmount; x++)
-            {
-                var texture = textures2D[x, y];
-                var sprite = Sprite.Create(
-                    texture,
-                    new Rect(0, 0, texture.width, texture.height),
-                    new Vector2(0.5f, 0.5f));
-
-                var currentPosition = currentsPositions[y, x];
-                _vectorToButtonsInstanceDictionary[currentPosition].GetComponent<Image>().sprite = sprite;
-            }
-        }
-
-        public void FillWithNumbers(Vector2Int[,] currentsPositions)
-        {
-            var elementsAmount = currentsPositions.GetLength(0);
-
-            var number = 1;
-            for (var y = elementsAmount - 1; y >= 0; y--)
-            for (var x = 0; x < elementsAmount; x++)
-            {
-                var currentPosition = currentsPositions[y, x];
-                var textComponent = _vectorToButtonsInstanceDictionary[currentPosition].GetComponentInChildren<Text>();
-
-                textComponent.enabled = true;
-                textComponent.text = $"{number}";
-                textComponent.resizeTextForBestFit = true;
-                textComponent.resizeTextMaxSize = 240;
-                number++;
-            }
-        }
-
-        public void CreatedFullImage(Texture2D texture2D)
-        {
-            var resources = new DefaultControls.Resources();
-
-            var imagePanel = DefaultControls.CreatePanel(resources);
-            imagePanel.transform.SetParent(_fullImagePanel.transform);
-
-            var imageComponent = imagePanel.GetComponent<Image>();
-            imageComponent.color = Color.white;
-            imageComponent.sprite = Sprite.Create(
-                texture2D,
-                new Rect(0, 0, texture2D.width, texture2D.height),
-                new Vector2(0.5f, 0.5f));
-
-
-            var rectTransformComponent = imagePanel.GetComponent<RectTransform>();
-            rectTransformComponent.anchorMin = new Vector2(0, 0);
-            rectTransformComponent.anchorMax = new Vector2(1, 1);
-            rectTransformComponent.offsetMin = new Vector2(0, 0);
-            rectTransformComponent.offsetMax = new Vector2(0, 0);
-        }
-
-        public void MovePrice(Vector2Int oldPosition, Vector2Int newPosition, int elementsAmount)
+        public void MovePart(Vector2Int oldPosition, Vector2Int newPosition, int elementsAmount)
         {
             var priceInstance = _vectorToButtonsInstanceDictionary[oldPosition];
 
@@ -154,14 +98,41 @@ namespace UI.FoldingThePuzzle
             }
         }
 
-        public void PartsPanelSetActive(bool value)
+        public void FillWithPartsOfCutsImages(Texture2D[,] textures2D, Vector2Int[,] currentsPositions)
         {
-            _partsPanel.SetActive(value);
+            var elementsAmount = currentsPositions.GetLength(0);
+
+            for (var y = 0; y < elementsAmount; y++)
+            for (var x = 0; x < elementsAmount; x++)
+            {
+                var texture = textures2D[x, y];
+                var sprite = Sprite.Create(
+                    texture,
+                    new Rect(0, 0, texture.width, texture.height),
+                    new Vector2(0.5f, 0.5f));
+
+                var currentPosition = currentsPositions[y, x];
+                _vectorToButtonsInstanceDictionary[currentPosition].GetComponent<Image>().sprite = sprite;
+            }
         }
 
-        public void FullImagePanelSetActive(bool value)
+        public void FillWithPartsOfCutsNumbers(Vector2Int[,] currentsPositions)
         {
-            _fullImagePanel.SetActive(value);
+            var elementsAmount = currentsPositions.GetLength(0);
+
+            var number = 1;
+            for (var y = elementsAmount - 1; y >= 0; y--)
+            for (var x = 0; x < elementsAmount; x++)
+            {
+                var currentPosition = currentsPositions[y, x];
+                var textComponent = _vectorToButtonsInstanceDictionary[currentPosition].GetComponentInChildren<Text>();
+
+                textComponent.enabled = true;
+                textComponent.text = $"{number}";
+                textComponent.resizeTextForBestFit = true;
+                textComponent.resizeTextMaxSize = 240;
+                number++;
+            }
         }
     }
 }

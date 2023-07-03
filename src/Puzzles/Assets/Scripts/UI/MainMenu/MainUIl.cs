@@ -1,20 +1,16 @@
-﻿#region
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
-
-#endregion
 
 namespace UI.MainMenu
 {
-    public class MainPanel : MonoBehaviour
+    public class MainUI : MonoBehaviour
     {
+        [SerializeField] private GameObject _mainPanel;
         [SerializeField] private Button _startGameDefaultButton;
         [SerializeField] private Button _startGameCustomButton;
         [SerializeField] private Button _exitButton;
-
-        [SerializeField] private GameObject _mainPanel;
 
         public void RegisterStartGameDefaultButtonListener(UnityAction action)
         {
@@ -38,7 +34,7 @@ namespace UI.MainMenu
             _exitButton.onClick.RemoveAllListeners();
         }
 
-        public void SetActive(bool isActive)
+        public void PanelSetActive(bool isActive)
         {
             _mainPanel.SetActive(isActive);
         }

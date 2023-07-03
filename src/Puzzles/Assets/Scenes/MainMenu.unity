@@ -293,7 +293,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 334546994}
-  - component: {fileID: 334546995}
+  - component: {fileID: 334546996}
   m_Layer: 5
   m_Name: MainPanel
   m_TagString: Untagged
@@ -322,7 +322,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &334546995
+--- !u!114 &334546996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -331,13 +331,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 334546993}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6276f1a17af9462eab6f0aad18f6c80e, type: 3}
+  m_Script: {fileID: 11500000, guid: e19933aea18c48b784223778a53d2471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainPanel: {fileID: 2013665775}
   _startGameDefaultButton: {fileID: 556843953}
   _startGameCustomButton: {fileID: 1664660410}
   _exitButton: {fileID: 595992122}
-  _mainPanel: {fileID: 2013665775}
 --- !u!1 &556843951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,7 +1387,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1425772447}
-  - component: {fileID: 1425772448}
+  - component: {fileID: 1425772449}
   m_Layer: 5
   m_Name: GameplaySettingPanel
   m_TagString: Untagged
@@ -1416,7 +1416,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1425772448
+--- !u!114 &1425772449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1425,14 +1425,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1425772446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 462ac4b1053940b0acd294d70e09eef8, type: 3}
+  m_Script: {fileID: 11500000, guid: fd8df3ec736b4342b5f422920be95347, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _modeSettingPanel: {fileID: 2071901556}
   _hardcoreButton: {fileID: 904913708}
   _normalButton: {fileID: 90124985}
   _easyButton: {fileID: 714802575}
   _backButton: {fileID: 1544753603}
-  _modeSettingPanel: {fileID: 2071901556}
 --- !u!1 &1544753601
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,8 +2061,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f558fbdbe3d1709438568acc29d79383, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainPanel: {fileID: 334546995}
-  _modeSettingPanel: {fileID: 1425772448}
+  _mainUI: {fileID: 334546996}
+  _modeSettingUI: {fileID: 1425772449}
 --- !u!1 &1967266815
 GameObject:
   m_ObjectHideFlags: 0
