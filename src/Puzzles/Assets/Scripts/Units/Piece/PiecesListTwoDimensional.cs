@@ -80,7 +80,7 @@ namespace Units.Piece
         {
             var x = position.x;
             var y = position.y;
-            if (_grid[y, x] == null) throw new Exception("Piece not found");
+            if (_grid[y, x] == null) Debug.LogWarning($"Piece not found {x}/{y}");
             _partsOutOfPlace.Remove(_grid[y, x]);
             _grid[y, x] = null;
         }

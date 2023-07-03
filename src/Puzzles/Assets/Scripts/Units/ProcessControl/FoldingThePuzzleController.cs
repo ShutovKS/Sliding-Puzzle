@@ -26,37 +26,13 @@ namespace Units.ProcessControl
             var partsAmount = NumberOfItemsPerDifficulties.GetPartsCountPerMode[difficultyLevel];
             var emptyPosition = new Vector2Int(partsAmount - 1, 0);
             var currentPositions = GenerationPositions.GetRandomPositions(partsAmount, emptyPosition);
-
-            var piecesListTwoDimensional = InitialisePiecesListTwoDimensional(currentPositions);
-            piecesListTwoDimensional.RegisterOnAllPartsInPlace(EnableFullImagePanel);
-
-            _partsUI.CreatedParts(partsAmount);
-            _partsUI.RegisteringButtonsEvents(MovePart);
-
             var gameType = PlayerPrefs.GetString(KeysForPlayerPrefs.GAME_TYPE_KEY);
-            switch (gameType)
-            {
-                case GameTypes.DEFAULT_GAME:
-                    _partsUI.FillWithPartsOfCutsNumbers(currentPositions);
-
-                    break;
-                case GameTypes.CUSTOM_GAME:
-                    var pathToImage = PlayerPrefs.GetString(KeysForPlayerPrefs.IMAGE_PATH_KEY);
-                    var texture2D = ImageLoader.GetImageByPath(pathToImage);
-                    var textures2D = ImageCutter.CutImage(
-                        texture2D,
-                        ImageCutterType.NumberOfParts,
-                        partsAmount,
-                        partsAmount);
-
-                    _partsUI.FillWithPartsOfCutsImages(textures2D, currentPositions);
-                    _fullImageUI.CreatedFullImage(texture2D);
-                    break;
-            }
-
-            RemovePart(emptyPosition);
+            PiecesListTwoDimensional piecesListTwoDimensional;
+            
+            CreatedParts();
 
             _buttonsUI.RegisterExitButton(ExitInMainMenu);
+            _buttonsUI.RegisterResetButton(ResetParts);
 
             return;
 
@@ -84,9 +60,59 @@ namespace Units.ProcessControl
             {
                 SceneManager.LoadScene("MainMenu");
             }
+
+            void CreatedParts()
+            {
+                piecesListTwoDimensional = InitialisePiecesListTwoDimensional(currentPositions);
+                piecesListTwoDimensional.RegisterOnAllPartsInPlace(EnableFullImagePanel);
+
+                _partsUI.CreatedParts(partsAmount);
+                _partsUI.RegisteringButtonsEvents(MovePart);
+
+                switch (gameType)
+                {
+                    case GameTypes.DEFAULT_GAME:
+                        _partsUI.FillWithPartsOfCutsNumbers(currentPositions);
+
+                        break;
+                    case GameTypes.CUSTOM_GAME:
+                        var pathToImage = PlayerPrefs.GetString(KeysForPlayerPrefs.IMAGE_PATH_KEY);
+                        var texture2D = ImageLoader.GetImageByPath(pathToImage);
+                        var textures2D = ImageCutter.CutImage(
+                            texture2D,
+                            ImageCutterType.NumberOfParts,
+                            partsAmount,
+                            partsAmount);
+
+                        _partsUI.FillWithPartsOfCutsImages(textures2D, currentPositions);
+                        _fullImageUI.CreatedFullImage(texture2D);
+                        break;
+                }
+
+                RemovePart(emptyPosition);
+            }
+
+            void ResetParts()
+            {
+                var position = new Vector2Int(0, 0);
+                for (var y = 0; y < partsAmount; y++)
+                {
+                    for (var x = 0; x < partsAmount; x++)
+                    {
+                        _partsUI.RemovePart(position);
+                        piecesListTwoDimensional.RemovePiece(position);
+                        position.x++;
+                    }
+
+                    position.x = 0;
+                    position.y++;
+                }
+
+                CreatedParts();
+            }
         }
 
-        private PiecesListTwoDimensional InitialisePiecesListTwoDimensional(Vector2Int[,] currentPositions)
+        private static PiecesListTwoDimensional InitialisePiecesListTwoDimensional(Vector2Int[,] currentPositions)
         {
             var partsAmount = currentPositions.GetLength(0);
             var piecesListTwoDimensional = new PiecesListTwoDimensional(partsAmount, partsAmount);
