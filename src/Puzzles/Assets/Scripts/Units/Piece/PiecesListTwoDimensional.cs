@@ -87,7 +87,7 @@ namespace Units.Piece
 
         public void RegisterOnAllPartsInPlace(UnityAction action)
         {
-            _onAllPartsInPlace += action;
+            _onAllPartsInPlace = action;
         }
 
         private void CheckOnPiece(Piece piece)
