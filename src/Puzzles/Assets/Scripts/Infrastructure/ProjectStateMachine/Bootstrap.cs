@@ -16,7 +16,9 @@ namespace Infrastructure.ProjectStateMachine
             IAssetsAddressablesProvider assetsAddressablesProvider)
         {
             StateMachine = new StateMachine<Bootstrap>(
-                new BootstrapState(this)
+                new BootstrapState(this),
+                new MainMenuState(this, uiFactory),
+                new InGameMenu(this, uiFactory, abstractFactory)
             );
         }
 

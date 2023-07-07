@@ -19,33 +19,37 @@ namespace Services.Factories.UIFactory
 
         public GameObject LoadingScreen { get; private set; }
         public GameObject MainMenuScreen { get; private set; }
+        public GameObject InGameMenuScreen { get; private set; }
 
         public async Task<GameObject> CreatedLoadingScreen()
         {
-            var gameObject = await _assetsAddressableService.GetAsset<GameObject>(
+            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
                 AssetsAddressablesConstants.LOADING_SCREEN);
 
-            LoadingScreen = _container.InstantiatePrefab(gameObject);
+            LoadingScreen = _container.InstantiatePrefab(prefab);
             return LoadingScreen;
         }
 
-        public void DestroyLoadingScreen()
+        public async Task<GameObject> CreatedInGameMenuScreen()
         {
-            Object.Destroy(LoadingScreen);
+            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
+                AssetsAddressablesConstants.IN_GAME_MENU_SCREEN);
+
+            InGameMenuScreen = _container.InstantiatePrefab(prefab);
+            return InGameMenuScreen;
         }
 
         public async Task<GameObject> CreatedMainMenuScreen()
         {
-            var gameObject = await _assetsAddressableService.GetAsset<GameObject>(
+            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
                 AssetsAddressablesConstants.MAIN_MENU_SCREEN);
 
-            MainMenuScreen = _container.InstantiatePrefab(gameObject);
+            MainMenuScreen = _container.InstantiatePrefab(prefab);
             return MainMenuScreen;
         }
 
-        public void DestroyMainMenuScreen()
-        {
-            Object.Destroy(MainMenuScreen);
-        }
+        public void DestroyLoadingScreen() => Object.Destroy(LoadingScreen);
+        public void DestroyMainMenuScreen() => Object.Destroy(MainMenuScreen);
+        public void DestroyInGameMenuScreen() => Object.Destroy(InGameMenuScreen);
     }
 }

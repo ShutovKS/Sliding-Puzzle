@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Services.AssetsAddressablesProvider;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -6,14 +7,29 @@ namespace Services.Factories.AbstractFactory
 {
     public class AbstractFactory : IAbstractFactory
     {
-        public Task<T> CreateInstance<T>(string path) where T : Object
+        private readonly IAssetsAddressablesProvider _assetsAddressablesProvider;
+
+        public AbstractFactory(IAssetsAddressablesProvider assetsAddressablesProvider)
         {
-            throw new System.NotImplementedException();
+            _assetsAddressablesProvider = assetsAddressablesProvider;
+        }
+        
+        public async Task<T> CreateInstance<T>(string path) where T : Object
+        {
+            var prefab = await _assetsAddressablesProvider.GetAsset<T>(path);
+
+            var instance = Object.Instantiate(prefab);
+
+            return instance;
         }
 
-        public Task<T> CreateInstance<T>(AssetReference path) where T : Object
+        public async Task<T> CreateInstance<T>(AssetReference path) where T : Object
         {
-            throw new System.NotImplementedException();
+            var prefab = await _assetsAddressablesProvider.GetAsset<T>(path);
+
+            var instance = Object.Instantiate(prefab);
+
+            return instance;
         }
     }
 }

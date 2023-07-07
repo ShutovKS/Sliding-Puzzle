@@ -10,5 +10,8 @@ namespace Services.Factories.UIFactory
         
         Task<GameObject> CreatedMainMenuScreen();
         void DestroyMainMenuScreen();
+
+        Task<GameObject> CreatedInGameMenuScreen();
+        void DestroyInGameMenuScreen();
     }
 }
