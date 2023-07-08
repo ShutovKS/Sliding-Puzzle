@@ -7,6 +7,7 @@ namespace UI.InGameMenu
     {
         [SerializeField] private Button _backButton;
         [SerializeField] private RectTransform _scrollContentRectTransform;
+        private float _indentBetweenPanels = 10f;
 
         public void RegisterBackButtonListener(System.Action listener)
         {
@@ -18,11 +19,15 @@ namespace UI.InGameMenu
             panel.SetParent(_scrollContentRectTransform, false);
 
             var scrollSizeDelta = _scrollContentRectTransform.sizeDelta;
-            scrollSizeDelta.x += panel.sizeDelta.x;
+            scrollSizeDelta.x += _scrollContentRectTransform.childCount == 1
+                ? panel.sizeDelta.x
+                : panel.sizeDelta.x + _indentBetweenPanels;
+
             _scrollContentRectTransform.sizeDelta = scrollSizeDelta;
 
             var panelAnchoredPosition = panel.anchoredPosition;
-            panelAnchoredPosition.x = scrollSizeDelta.x - panel.sizeDelta.x;
+            panelAnchoredPosition.x = scrollSizeDelta.x - panel.sizeDelta.x * 0.5f;
+
             panel.anchoredPosition = panelAnchoredPosition;
         }
     }
