@@ -13,5 +13,8 @@ namespace Services.Factories.UIFactory
 
         Task<GameObject> CreatedInGameMenuScreen();
         void DestroyInGameMenuScreen();
+
+        Task<GameObject> CreatedFoldingThePuzzle();
+        void DestroyFoldingThePuzzle();
     }
 }

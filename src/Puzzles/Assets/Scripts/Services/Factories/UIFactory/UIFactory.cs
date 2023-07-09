@@ -20,6 +20,7 @@ namespace Services.Factories.UIFactory
         public GameObject LoadingScreen { get; private set; }
         public GameObject MainMenuScreen { get; private set; }
         public GameObject InGameMenuScreen { get; private set; }
+        public GameObject FoldingThePuzzle { get; private set; }
 
         public async Task<GameObject> CreatedLoadingScreen()
         {
@@ -47,9 +48,19 @@ namespace Services.Factories.UIFactory
             MainMenuScreen = _container.InstantiatePrefab(prefab);
             return MainMenuScreen;
         }
+        
+        public async Task<GameObject> CreatedFoldingThePuzzle()
+        {
+            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
+                AssetsAddressablesConstants.FOLDING_THE_PUZZLE_SCREEN);
+
+            FoldingThePuzzle = _container.InstantiatePrefab(prefab);
+            return FoldingThePuzzle;
+        }
 
         public void DestroyLoadingScreen() => Object.Destroy(LoadingScreen);
         public void DestroyMainMenuScreen() => Object.Destroy(MainMenuScreen);
         public void DestroyInGameMenuScreen() => Object.Destroy(InGameMenuScreen);
+        public void DestroyFoldingThePuzzle() => Object.Destroy(FoldingThePuzzle);
     }
 }

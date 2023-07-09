@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace UI.FoldingThePuzzle
 {
-    public class PartsUI : MonoBehaviour
+    public class FoldingThePuzzlePuzzlesUI : MonoBehaviour
     {
         [SerializeField] private GameObject _partsPanel;
 
@@ -54,6 +54,8 @@ namespace UI.FoldingThePuzzle
 
                 rectTransformComponent.offsetMin = new Vector2(0, 0);
                 rectTransformComponent.offsetMax = new Vector2(0, 0);
+                
+                rectTransformComponent.localScale = Vector3.one;
 
                 _vectorToButtonsInstanceDictionary.Add(position, buttonGo);
                 _buttonsInstanceToVectorDictionary.Add(buttonGo, position);

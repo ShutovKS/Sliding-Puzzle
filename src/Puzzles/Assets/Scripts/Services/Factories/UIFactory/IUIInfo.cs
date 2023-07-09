@@ -7,5 +7,6 @@ namespace Services.Factories.UIFactory
         GameObject LoadingScreen { get; }
         GameObject MainMenuScreen { get; }
         GameObject InGameMenuScreen { get; }
+        GameObject FoldingThePuzzle { get; }
     }
 }

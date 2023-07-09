@@ -32,6 +32,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bc01f8f0ebb1c94587f707c2525d18c
+    m_Address: Screen/FoldingThePuzzle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d0036e2203b665242a571c2d7e3cdb47, type: 2}
   m_SchemaSet:

@@ -68,7 +68,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void OpenGame(PuzzleInformation puzzleInformation)
         {
-            Debug.Log($"Open game {puzzleInformation.Name}");
+            Initializer.StateMachine.SwitchState<FoldingThePuzzleState, PuzzleInformation>(puzzleInformation);
         }
 
         private void BackInMainMenu()
