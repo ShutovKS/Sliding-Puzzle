@@ -1,7 +1,12 @@
-﻿using Services.AssetsAddressablesProvider;
+﻿#region
+
+using Services.AssetsAddressablesProvider;
 using Services.Factories.AbstractFactory;
 using Services.Factories.UIFactory;
+using Services.LoadPuzzlesCatalogData;
 using Zenject;
+
+#endregion
 
 namespace Infrastructure.Installers
 {
@@ -12,6 +17,7 @@ namespace Infrastructure.Installers
             BindUIFactory();
             BindAbstractFactory();
             BindAssetsAddressablesProvider();
+            BindLoadPuzzlesCatalogData();
         }
 
         private void BindUIFactory()
@@ -27,6 +33,11 @@ namespace Infrastructure.Installers
         private void BindAssetsAddressablesProvider()
         {
             Container.BindInterfacesTo<AssetsAddressablesProvider>().AsSingle();
+        }
+        
+        private void BindLoadPuzzlesCatalogData()
+        {
+            Container.BindInterfacesTo<LoadPuzzlesCatalogData>().AsSingle();
         }
     }
 }

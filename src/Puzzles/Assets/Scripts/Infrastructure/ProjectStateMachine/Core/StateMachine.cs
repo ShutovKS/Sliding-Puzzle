@@ -1,6 +1,10 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace Infrastructure.ProjectStateMachine.Core
 {
@@ -13,8 +17,9 @@ namespace Infrastructure.ProjectStateMachine.Core
             _states = states.ToDictionary(state => state.GetType(), state => state);
         }
 
-        private IState<TInitializer> _currentState;
         private readonly Dictionary<Type, IState<TInitializer>> _states;
+
+        private IState<TInitializer> _currentState;
 
         public void SwitchState<TState>() where TState : IState<TInitializer>
         {

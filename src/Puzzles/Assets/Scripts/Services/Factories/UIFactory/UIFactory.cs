@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
+using System.Threading.Tasks;
 using Data.AssetsAddressablesConstants;
 using Services.AssetsAddressablesProvider;
 using UnityEngine;
 using Zenject;
+
+#endregion
 
 namespace Services.Factories.UIFactory
 {
@@ -14,8 +18,9 @@ namespace Services.Factories.UIFactory
             _assetsAddressableService = assetsAddressableService;
         }
 
-        private readonly DiContainer _container;
         private readonly IAssetsAddressablesProvider _assetsAddressableService;
+
+        private readonly DiContainer _container;
 
         public GameObject LoadingScreen { get; private set; }
         public GameObject MainMenuScreen { get; private set; }
@@ -48,7 +53,7 @@ namespace Services.Factories.UIFactory
             MainMenuScreen = _container.InstantiatePrefab(prefab);
             return MainMenuScreen;
         }
-        
+
         public async Task<GameObject> CreatedFoldingThePuzzle()
         {
             var prefab = await _assetsAddressableService.GetAsset<GameObject>(
@@ -58,9 +63,24 @@ namespace Services.Factories.UIFactory
             return FoldingThePuzzle;
         }
 
-        public void DestroyLoadingScreen() => Object.Destroy(LoadingScreen);
-        public void DestroyMainMenuScreen() => Object.Destroy(MainMenuScreen);
-        public void DestroyInGameMenuScreen() => Object.Destroy(InGameMenuScreen);
-        public void DestroyFoldingThePuzzle() => Object.Destroy(FoldingThePuzzle);
+        public void DestroyLoadingScreen()
+        {
+            Object.Destroy(LoadingScreen);
+        }
+
+        public void DestroyMainMenuScreen()
+        {
+            Object.Destroy(MainMenuScreen);
+        }
+
+        public void DestroyInGameMenuScreen()
+        {
+            Object.Destroy(InGameMenuScreen);
+        }
+
+        public void DestroyFoldingThePuzzle()
+        {
+            Object.Destroy(FoldingThePuzzle);
+        }
     }
 }

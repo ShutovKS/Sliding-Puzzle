@@ -1,7 +1,10 @@
+#region
+
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+#endregion
 
 namespace UI.FoldingThePuzzle
 {

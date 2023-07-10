@@ -1,5 +1,10 @@
-﻿using UnityEngine;
+﻿#region
+
+using System;
+using UnityEngine;
 using UnityEngine.UI;
+
+#endregion
 
 namespace UI.InGameMenu
 {
@@ -7,9 +12,9 @@ namespace UI.InGameMenu
     {
         [SerializeField] private Button _backButton;
         [SerializeField] private RectTransform _scrollContentRectTransform;
-        private float _indentBetweenPanels = 10f;
+        private readonly float _indentBetweenPanels = 10f;
 
-        public void RegisterBackButtonListener(System.Action listener)
+        public void RegisterBackButtonListener(Action listener)
         {
             _backButton.onClick.AddListener(() => listener?.Invoke());
         }

@@ -1,26 +1,34 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
+using System;
+using System.Threading.Tasks;
 using Data.AssetsAddressablesConstants;
 using Data.PuzzleInformation;
 using Infrastructure.ProjectStateMachine.Core;
 using Services.Factories.AbstractFactory;
 using Services.Factories.UIFactory;
+using Services.LoadPuzzlesCatalogData;
 using UI.InGameMenu;
 using UnityEngine;
+
+#endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
     public class InGameMenu : IState<Bootstrap>, IEnter, IExit
     {
-        public InGameMenu(Bootstrap initializer, IUIFactory uiFactory, IAbstractFactory abstractFactory)
+        public InGameMenu(Bootstrap initializer, IUIFactory uiFactory, IAbstractFactory abstractFactory,
+            ILoadPuzzlesCatalogData loadPuzzlesCatalogData)
         {
             _uiFactory = uiFactory;
             _abstractFactory = abstractFactory;
+            _loadPuzzlesCatalogData = loadPuzzlesCatalogData;
             Initializer = initializer;
         }
 
-        public Bootstrap Initializer { get; }
-        private readonly IUIFactory _uiFactory;
         private readonly IAbstractFactory _abstractFactory;
+        private readonly ILoadPuzzlesCatalogData _loadPuzzlesCatalogData;
+        private readonly IUIFactory _uiFactory;
 
         public async void OnEnter()
         {
@@ -31,6 +39,8 @@ namespace Infrastructure.ProjectStateMachine.States
         {
             _uiFactory.DestroyInGameMenuScreen();
         }
+
+        public Bootstrap Initializer { get; }
 
         private async Task CreatedUI()
         {
@@ -43,7 +53,7 @@ namespace Infrastructure.ProjectStateMachine.States
                 {
                     var panel = await _abstractFactory.CreateInstance<GameObject>(
                         AssetsAddressablesConstants.PUZZLE_INFORMATION_SCREEN);
-
+                    
                     panel.GetComponent<PuzzleInformationUI>().SetUp(
                         puzzleInformation.Image,
                         puzzleInformation.Name,
@@ -56,12 +66,12 @@ namespace Infrastructure.ProjectStateMachine.States
 
                 inGameMenuUI.RegisterBackButtonListener(BackInMainMenu);
             }
-            else throw new System.Exception("InGameMenuUI not found");
+            else throw new Exception("InGameMenuUI not found");
         }
 
         private PuzzleInformation[] LoadPuzzlesInformation()
         {
-            var puzzleInformation = Resources.LoadAll<PuzzleInformation>($"PuzzlesInformation");
+            var puzzleInformation = _loadPuzzlesCatalogData.GetPuzzlesInformations("animals").ToArray();
 
             return puzzleInformation;
         }

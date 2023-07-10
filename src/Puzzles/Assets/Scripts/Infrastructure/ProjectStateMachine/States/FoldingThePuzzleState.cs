@@ -1,8 +1,7 @@
-﻿using System;
+﻿#region
+
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Data.GameType;
-using Data.PlayerPrefs;
 using Data.PuzzleInformation;
 using Infrastructure.ProjectStateMachine.Core;
 using Services.Factories.UIFactory;
@@ -12,8 +11,9 @@ using Units.Piece;
 using Units.PuzzleGenerator;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
+
+#endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
@@ -25,25 +25,24 @@ namespace Infrastructure.ProjectStateMachine.States
             Initializer = initializer;
         }
 
-        public Bootstrap Initializer { get; }
         private readonly IUIFactory _uiFactory;
+        private Vector2Int[,] _currentPositions;
+        private Vector2Int _emptyPosition;
+        private GameObject _foldingThePuzzleInstance;
+        private FoldingThePuzzleGameOverUI _gameOverUI;
 
         private FoldingThePuzzleImageSampleUI _imageSampleUI;
-        private FoldingThePuzzleGameOverUI _gameOverUI;
-        private FoldingThePuzzlePuzzlesUI _puzzlesUI;
+        private bool _isStopTimer;
         private FoldingThePuzzleMenuUI _menuUI;
 
         private UnityAction<string> _onTimerUpdate;
+        private int _partsAmount;
+        private PiecesListTwoDimensional _piecesListTwoDimensional;
+        private FoldingThePuzzlePuzzlesUI _puzzlesUI;
+        private Texture2D _texture2D;
+        private Texture2D[,] _textures2D;
 
         private Stopwatch _timerWatch;
-        private PiecesListTwoDimensional _piecesListTwoDimensional;
-        private GameObject _foldingThePuzzleInstance;
-        private Vector2Int[,] _currentPositions;
-        private Vector2Int _emptyPosition;
-        private Texture2D[,] _textures2D;
-        private Texture2D _texture2D;
-        private int _partsAmount;
-        private bool _isStopTimer;
 
         public async void OnEnter(PuzzleInformation puzzleInformation)
         {
@@ -73,6 +72,8 @@ namespace Infrastructure.ProjectStateMachine.States
             DestroyUI();
             TimerStop();
         }
+
+        public Bootstrap Initializer { get; }
 
         #region UI
 
@@ -194,7 +195,7 @@ namespace Infrastructure.ProjectStateMachine.States
         {
             Initializer.StateMachine.SwitchState<MainMenuState>();
         }
-        
+
         private void TimerStart()
         {
             _isStopTimer = false;

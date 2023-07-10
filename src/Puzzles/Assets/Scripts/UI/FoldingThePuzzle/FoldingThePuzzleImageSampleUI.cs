@@ -1,14 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
+#region
+
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FoldingThePuzzleImageSampleUI : MonoBehaviour
-{
-    [SerializeField] private Image _image;
+#endregion
 
-    public void SetImageSample(Texture2D texture2D)
+namespace UI.FoldingThePuzzle
+{
+    public class FoldingThePuzzleImageSampleUI : MonoBehaviour
     {
-        _image.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
+        [SerializeField] private Image _image;
+
+        public void SetImageSample(Texture2D texture2D)
+        {
+            _image.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
+        }
     }
 }

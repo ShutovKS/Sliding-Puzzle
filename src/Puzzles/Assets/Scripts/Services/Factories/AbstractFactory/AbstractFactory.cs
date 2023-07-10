@@ -1,19 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
+using System.Threading.Tasks;
 using Services.AssetsAddressablesProvider;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+
+#endregion
 
 namespace Services.Factories.AbstractFactory
 {
     public class AbstractFactory : IAbstractFactory
     {
-        private readonly IAssetsAddressablesProvider _assetsAddressablesProvider;
-
         public AbstractFactory(IAssetsAddressablesProvider assetsAddressablesProvider)
         {
             _assetsAddressablesProvider = assetsAddressablesProvider;
         }
-        
+
+        private readonly IAssetsAddressablesProvider _assetsAddressablesProvider;
+
         public async Task<T> CreateInstance<T>(string path) where T : Object
         {
             var prefab = await _assetsAddressablesProvider.GetAsset<T>(path);

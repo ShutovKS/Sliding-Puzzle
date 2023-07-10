@@ -54,7 +54,7 @@ namespace UI.FoldingThePuzzle
 
                 rectTransformComponent.offsetMin = new Vector2(0, 0);
                 rectTransformComponent.offsetMax = new Vector2(0, 0);
-                
+
                 rectTransformComponent.localScale = Vector3.one;
 
                 _vectorToButtonsInstanceDictionary.Add(position, buttonGo);

@@ -1,8 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
+using System;
+using System.Threading.Tasks;
 using Infrastructure.ProjectStateMachine.Core;
 using Services.Factories.UIFactory;
 using UI.MainMenu;
 using UnityEngine;
+
+#endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
@@ -14,7 +19,6 @@ namespace Infrastructure.ProjectStateMachine.States
             Initializer = initializer;
         }
 
-        public Bootstrap Initializer { get; }
         private readonly IUIFactory _uiFactory;
 
         public async void OnEnter()
@@ -26,6 +30,8 @@ namespace Infrastructure.ProjectStateMachine.States
         {
             _uiFactory.DestroyMainMenuScreen();
         }
+
+        public Bootstrap Initializer { get; }
 
         private async Task CreatedUI()
         {
@@ -39,7 +45,7 @@ namespace Infrastructure.ProjectStateMachine.States
             }
             else
             {
-                throw new System.Exception("MainMenuUI not found");
+                throw new Exception("MainMenuUI not found");
             }
 
             void StartGame()
@@ -57,7 +63,7 @@ namespace Infrastructure.ProjectStateMachine.States
 #if UNITY_EDITOR
                 Debug.Log("Exit from game");
 #else
-            Application.Quit();
+                Application.Quit();
 #endif
             }
         }

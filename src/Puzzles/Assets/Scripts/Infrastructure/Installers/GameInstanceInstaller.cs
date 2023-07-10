@@ -1,6 +1,10 @@
-﻿using Infrastructure.ProjectStateMachine;
+﻿#region
+
+using Infrastructure.ProjectStateMachine;
 using Infrastructure.ProjectStateMachine.States;
 using Zenject;
+
+#endregion
 
 namespace Infrastructure.Installers
 {

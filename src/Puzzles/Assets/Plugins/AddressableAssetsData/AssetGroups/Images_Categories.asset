@@ -10,16 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: Images_Categories
   m_EditorClassIdentifier: 
-  m_GroupName: Default Local Group
+  m_GroupName: Images_Categories
   m_Data:
     m_SerializedData: []
-  m_GUID: a97e7cd7ade610b4eace691b63ad19e4
-  m_SerializeEntries: []
+  m_GUID: af7813603fc15fa498e9e4a4f811841c
+  m_SerializeEntries:
+  - m_GUID: eb8fc4d29b711ba41b05c6a0408f7af6
+    m_Address: animals
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d0036e2203b665242a571c2d7e3cdb47, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: ef9de1ed33e57ea4687ca08d71c0d3ad, type: 2}
-    - {fileID: 11400000, guid: 988941f74a16c7640afd0fd77e792c83, type: 2}
+    - {fileID: 11400000, guid: d7aaea968bc0a434193aa88b1785ba5b, type: 2}
+    - {fileID: 11400000, guid: f35c3628cb53a4048b6d73acdbe09653, type: 2}

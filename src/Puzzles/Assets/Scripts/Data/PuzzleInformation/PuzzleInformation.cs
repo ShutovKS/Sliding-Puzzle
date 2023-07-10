@@ -1,12 +1,24 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
+
+#endregion
 
 namespace Data.PuzzleInformation
 {
-    [CreateAssetMenu(fileName = "Puzzle information", menuName = "Data/Puzzle Information", order = 0)]
-    public class PuzzleInformation : ScriptableObject
+    public struct PuzzleInformation
     {
-        [field: SerializeField] public Texture2D Image { get; private set; }
-        [field: SerializeField] public int ElementsCount { get; private set; }
-        [field: SerializeField] public string Name { get; private set; }
+        public readonly Texture2D Image;
+        public readonly int ElementsCount;
+        public readonly string Name;
+        public readonly string Id;
+
+        public PuzzleInformation(Texture2D image, int elementsCount, string name, string id)
+        {
+            Image = image;
+            ElementsCount = elementsCount;
+            Name = name;
+            Id = id;
+        }
     }
 }

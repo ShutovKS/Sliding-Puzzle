@@ -1,5 +1,9 @@
-﻿using Infrastructure.ProjectStateMachine.Core;
+﻿#region
+
+using Infrastructure.ProjectStateMachine.Core;
 using Zenject;
+
+#endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
@@ -9,12 +13,12 @@ namespace Infrastructure.ProjectStateMachine.States
         {
             Initializer = initializer;
         }
-        
-        public Bootstrap Initializer { get; }
 
         public void Initialize()
         {
             Initializer.StateMachine.SwitchState<MainMenuState>();
         }
+
+        public Bootstrap Initializer { get; }
     }
 }

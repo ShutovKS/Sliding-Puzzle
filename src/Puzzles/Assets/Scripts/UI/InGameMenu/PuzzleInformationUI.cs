@@ -1,7 +1,11 @@
-﻿using TMPro;
+﻿#region
+
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+
+#endregion
 
 namespace UI.InGameMenu
 {

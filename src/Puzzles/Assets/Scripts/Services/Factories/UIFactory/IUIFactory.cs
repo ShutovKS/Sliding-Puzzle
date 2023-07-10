@@ -1,5 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
+using System.Threading.Tasks;
 using UnityEngine;
+
+#endregion
 
 namespace Services.Factories.UIFactory
 {
@@ -7,7 +11,7 @@ namespace Services.Factories.UIFactory
     {
         Task<GameObject> CreatedLoadingScreen();
         void DestroyLoadingScreen();
-        
+
         Task<GameObject> CreatedMainMenuScreen();
         void DestroyMainMenuScreen();
 

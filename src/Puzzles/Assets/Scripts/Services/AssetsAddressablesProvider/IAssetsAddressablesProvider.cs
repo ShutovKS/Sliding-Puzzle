@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+
+#endregion
 
 namespace Services.AssetsAddressablesProvider
 {
