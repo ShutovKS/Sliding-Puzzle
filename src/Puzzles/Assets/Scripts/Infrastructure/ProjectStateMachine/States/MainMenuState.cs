@@ -50,7 +50,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
             void StartGame()
             {
-                Initializer.StateMachine.SwitchState<InGameMenu>();
+                Initializer.StateMachine.SwitchState<InGameMenuState>();
             }
 
             void Setting()

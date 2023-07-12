@@ -62,15 +62,14 @@ namespace Infrastructure.ProjectStateMachine.States
 
             await CreatedUI();
             CreatedParts();
-
-            _onTimerUpdate += Debug.Log;
             TimerStart();
         }
 
         public void OnExit()
         {
-            DestroyUI();
             TimerStop();
+            Clear();
+            DestroyUI();
         }
 
         public Bootstrap Initializer { get; }
@@ -79,12 +78,20 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private async Task CreatedUI()
         {
-            var foldingThePuzzleInstance = await _uiFactory.CreatedFoldingThePuzzle();
+            if (_uiFactory.FoldingThePuzzle == null)
+            {
+                _foldingThePuzzleInstance = await _uiFactory.CreatedFoldingThePuzzle();
+            }
+            else
+            {
+                _uiFactory.FoldingThePuzzle.SetActive(true);
+                _foldingThePuzzleInstance = _uiFactory.FoldingThePuzzle;
+            }
 
-            _imageSampleUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleImageSampleUI>();
-            _gameOverUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleGameOverUI>();
-            _puzzlesUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzlePuzzlesUI>();
-            _menuUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleMenuUI>();
+            _imageSampleUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleImageSampleUI>();
+            _gameOverUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleGameOverUI>();
+            _puzzlesUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzlePuzzlesUI>();
+            _menuUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleMenuUI>();
 
             SetUpGameOverUI();
             SetUpImageSampleUI();
@@ -93,7 +100,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void DestroyUI()
         {
-            _uiFactory.DestroyFoldingThePuzzle();
+            _foldingThePuzzleInstance.SetActive(false);
         }
 
         private void SetUpGameOverUI()
@@ -118,7 +125,7 @@ namespace Infrastructure.ProjectStateMachine.States
         private void OnAllPartsInPlace()
         {
             TimerStop();
-            _gameOverUI?.SetActiveFullImagePanel(true);
+            _gameOverUI.SetActiveFullImagePanel(true);
         }
 
         #endregion
@@ -194,6 +201,15 @@ namespace Infrastructure.ProjectStateMachine.States
         private void ExitInMainMenu()
         {
             Initializer.StateMachine.SwitchState<MainMenuState>();
+        }
+
+        private void Clear()
+        {
+            _piecesListTwoDimensional = null;
+            _imageSampleUI.Clear();
+            _gameOverUI.Clear();
+            _puzzlesUI.Clear();
+            _menuUI.Clear();
         }
 
         private void TimerStart()

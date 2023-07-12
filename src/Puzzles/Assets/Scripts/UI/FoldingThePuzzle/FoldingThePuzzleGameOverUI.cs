@@ -31,5 +31,12 @@ namespace UI.FoldingThePuzzle
         {
             _gameOverPanel.SetActive(value);
         }
+        
+        public void Clear()
+        {
+            _image.sprite = null;
+            _exitButton.onClick.RemoveAllListeners();
+            _gameOverPanel.SetActive(true);
+        }
     }
 }

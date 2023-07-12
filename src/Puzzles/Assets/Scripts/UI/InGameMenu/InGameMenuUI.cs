@@ -1,7 +1,10 @@
-﻿#region
+#region
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 #endregion
@@ -11,29 +14,83 @@ namespace UI.InGameMenu
     public class InGameMenuUI : MonoBehaviour
     {
         [SerializeField] private Button _backButton;
-        [SerializeField] private RectTransform _scrollContentRectTransform;
-        private readonly float _indentBetweenPanels = 10f;
+        [SerializeField] private RectTransform _scrollViewportRectTransform;
+        [SerializeField] private ScrollRect _scrollRect;
 
-        public void RegisterBackButtonListener(Action listener)
+        private readonly Dictionary<string, GameObject> _panels = new();
+        private GameObject _currentPanel;
+
+        public void AddPanels(RectTransform[] panels, string categoriesId)
         {
-            _backButton.onClick.AddListener(() => listener?.Invoke());
+            if (!_panels.TryGetValue(categoriesId, out var categoryInformationPanel))
+            {
+                var resources = new DefaultControls.Resources();
+                categoryInformationPanel = DefaultControls.CreatePanel(resources);
+                categoryInformationPanel.GetComponent<Image>().enabled = false;
+                categoryInformationPanel.transform.SetParent(_scrollViewportRectTransform, false);
+
+                var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
+                informationPanelRectTransform.anchorMin = new Vector2(0, 1);
+                informationPanelRectTransform.anchorMax = new Vector2(1, 1);
+                informationPanelRectTransform.pivot = new Vector2(0, 1);
+                informationPanelRectTransform.sizeDelta = new Vector2(0, 0);
+                informationPanelRectTransform.anchoredPosition = new Vector2(0, 0);
+            }
+
+            categoryInformationPanel.SetActive(true);
+
+            foreach (var panel in panels)
+            {
+                panel.SetParent(categoryInformationPanel.transform, false);
+                var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
+
+                var currentWidth = informationPanelRectTransform.rect.width;
+                var panelSizeDelta = panel.sizeDelta;
+                var panelsPerRow = (int)(currentWidth * (1f / panelSizeDelta.x));
+                var indentX = (currentWidth - (panelSizeDelta.x * panelsPerRow)) * (1f / (panelsPerRow - 1));
+
+                var childCount = categoryInformationPanel.transform.childCount;
+                var rowCount = Mathf.CeilToInt(childCount * (1f / panelsPerRow)) - 1;
+                var column = (childCount - 1) % panelsPerRow;
+
+                var panelX = panelSizeDelta.x * (0.5f + column) + indentX * column;
+                var panelY = -panelSizeDelta.y * (rowCount * 1.1f + 0.5f);
+
+                panel.anchoredPosition = new Vector2(panelX, panelY);
+
+                var totalHeight = (rowCount + 1) * (panel.sizeDelta.y * (1 + rowCount * 0.05f));
+
+                var parentPanelSizeDelta = informationPanelRectTransform.sizeDelta;
+                informationPanelRectTransform.sizeDelta = new Vector2(parentPanelSizeDelta.x, totalHeight);
+            }
+
+            _panels[categoriesId] = categoryInformationPanel;
+            categoryInformationPanel.SetActive(false);
         }
 
-        public void AddPanelToScroll(RectTransform panel)
+        public void SwitchPanel(string categoriesId, UnityAction listener)
         {
-            panel.SetParent(_scrollContentRectTransform, false);
+            if (_currentPanel != null)
+                _currentPanel.SetActive(false);
 
-            var scrollSizeDelta = _scrollContentRectTransform.sizeDelta;
-            scrollSizeDelta.x += _scrollContentRectTransform.childCount == 1
-                ? panel.sizeDelta.x
-                : panel.sizeDelta.x + _indentBetweenPanels;
+            if (!_panels.TryGetValue(categoriesId, out var panel))
+                throw new Exception("Panel not found");
 
-            _scrollContentRectTransform.sizeDelta = scrollSizeDelta;
+            panel.SetActive(true);
+            _currentPanel = panel;
+            _scrollRect.content = panel.GetComponent<RectTransform>();
+            _backButton.onClick.RemoveAllListeners();
+            _backButton.onClick.AddListener(listener);
+        }
 
-            var panelAnchoredPosition = panel.anchoredPosition;
-            panelAnchoredPosition.x = scrollSizeDelta.x - panel.sizeDelta.x * 0.5f;
+        public void Clear()
+        {
+            foreach (var panel in _panels.Values)
+                Destroy(panel);
 
-            panel.anchoredPosition = panelAnchoredPosition;
+            _panels.Clear();
+            _currentPanel = null;
+            _backButton.onClick.RemoveAllListeners();
         }
     }
 }

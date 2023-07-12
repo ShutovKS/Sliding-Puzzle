@@ -22,22 +22,22 @@ namespace Infrastructure.Installers
 
         private void BindUIFactory()
         {
-            Container.BindInterfacesTo<UIFactory>().AsSingle();
+            Container.BindInterfacesTo<UIFactory>().AsSingle().NonLazy();
         }
 
         private void BindAbstractFactory()
         {
-            Container.BindInterfacesTo<AbstractFactory>().AsSingle();
+            Container.BindInterfacesTo<AbstractFactory>().AsSingle().NonLazy();
         }
 
         private void BindAssetsAddressablesProvider()
         {
-            Container.BindInterfacesTo<AssetsAddressablesProvider>().AsSingle();
+            Container.BindInterfacesTo<AssetsAddressablesProvider>().AsSingle().NonLazy();
         }
         
         private void BindLoadPuzzlesCatalogData()
         {
-            Container.BindInterfacesTo<LoadPuzzlesCatalogData>().AsSingle();
+            Container.BindInterfacesTo<LoadPuzzlesCatalogData>().AsSingle().NonLazy();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Infrastructure.ProjectStateMachine
             StateMachine = new StateMachine<Bootstrap>(
                 new BootstrapState(this),
                 new MainMenuState(this, uiFactory),
-                new InGameMenu(this, uiFactory, abstractFactory, loadPuzzlesCatalogData),
+                new InGameMenuState(this, uiFactory, abstractFactory, loadPuzzlesCatalogData),
                 new FoldingThePuzzleState(this, uiFactory)
             );
         }

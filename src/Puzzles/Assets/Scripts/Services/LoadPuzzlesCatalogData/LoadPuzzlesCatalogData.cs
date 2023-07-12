@@ -11,7 +11,7 @@ namespace Services.LoadPuzzlesCatalogData
     {
         private List<CategoryInformation> _categoriesInformations;
         private Dictionary<string, List<PuzzleInformation>> _puzzleDictionary;
-        
+
         public LoadPuzzlesCatalogData()
         {
             LoadData();
@@ -20,7 +20,7 @@ namespace Services.LoadPuzzlesCatalogData
         public async void LoadData()
         {
             var path = Path.Combine(Application.streamingAssetsPath, "PuzzlesCatalogData.json");
-            var json = File.ReadAllText(path);
+            var json = await File.ReadAllTextAsync(path);
 
             var catalogData = JsonUtility.FromJson<PuzzlesCatalogData>(json);
             _puzzleDictionary = new Dictionary<string, List<PuzzleInformation>>();
@@ -28,8 +28,9 @@ namespace Services.LoadPuzzlesCatalogData
             if (catalogData.categories == null) return;
 
             _categoriesInformations = new List<CategoryInformation>();
-            foreach (var category in catalogData.categories)
+            for (var i = 0; i < catalogData.categories.Count; i++)
             {
+                var category = catalogData.categories[i];
                 var categoryInformation = new CategoryInformation(
                     await LoadTexture2D(category.image_path),
                     category.puzzles.Count,
@@ -46,7 +47,7 @@ namespace Services.LoadPuzzlesCatalogData
                         puzzle.element_count,
                         puzzle.name,
                         puzzle.id);
-                    
+
                     puzzleInformations.Add(puzzleInformation);
                 }
 
@@ -71,10 +72,8 @@ namespace Services.LoadPuzzlesCatalogData
         {
             var handle = Addressables.LoadAssetAsync<Texture2D>(imagePath);
             await handle.Task;
-    
+
             var image = handle.Result;
-    
-            Debug.Log($"Image {image == null}, Path {imagePath}");
 
             return image;
         }

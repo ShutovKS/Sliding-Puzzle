@@ -15,5 +15,10 @@ namespace UI.FoldingThePuzzle
         {
             _image.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
         }
+        
+        public void Clear()
+        {
+            _image.sprite = null;
+        }
     }
 }

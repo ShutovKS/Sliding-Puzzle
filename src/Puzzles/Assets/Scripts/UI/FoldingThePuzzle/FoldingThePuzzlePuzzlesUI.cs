@@ -136,5 +136,12 @@ namespace UI.FoldingThePuzzle
                 number++;
             }
         }
+
+        public void Clear()
+        {
+            foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary) Destroy(buttonInstance);
+            _buttonsInstanceToVectorDictionary.Clear();
+            _vectorToButtonsInstanceDictionary.Clear();
+        }
     }
 }

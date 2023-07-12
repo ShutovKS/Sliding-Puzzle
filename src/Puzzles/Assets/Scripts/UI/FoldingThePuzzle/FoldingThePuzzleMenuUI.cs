@@ -29,5 +29,12 @@ namespace UI.FoldingThePuzzle
         {
             _timerText.text = text;
         }
+
+        public void Clear()
+        {
+            _timerText.text = string.Empty;
+            _resetButton.onClick.RemoveAllListeners();
+            _exitButton.onClick.RemoveAllListeners();
+        }
     }
 }

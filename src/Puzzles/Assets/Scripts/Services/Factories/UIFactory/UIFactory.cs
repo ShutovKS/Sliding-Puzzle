@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Data.AssetsAddressablesConstants;
 using Services.AssetsAddressablesProvider;
 using UnityEngine;
-using Zenject;
 
 #endregion
 
@@ -12,16 +11,13 @@ namespace Services.Factories.UIFactory
 {
     public class UIFactory : IUIFactory
     {
-        public UIFactory(DiContainer container, IAssetsAddressablesProvider assetsAddressableService)
+        public UIFactory(IAssetsAddressablesProvider assetsAddressableService)
         {
-            _container = container;
             _assetsAddressableService = assetsAddressableService;
         }
 
         private readonly IAssetsAddressablesProvider _assetsAddressableService;
-
-        private readonly DiContainer _container;
-
+        
         public GameObject LoadingScreen { get; private set; }
         public GameObject MainMenuScreen { get; private set; }
         public GameObject InGameMenuScreen { get; private set; }
@@ -32,7 +28,7 @@ namespace Services.Factories.UIFactory
             var prefab = await _assetsAddressableService.GetAsset<GameObject>(
                 AssetsAddressablesConstants.LOADING_SCREEN);
 
-            LoadingScreen = _container.InstantiatePrefab(prefab);
+            LoadingScreen = Object.Instantiate(prefab);
             return LoadingScreen;
         }
 
@@ -41,7 +37,7 @@ namespace Services.Factories.UIFactory
             var prefab = await _assetsAddressableService.GetAsset<GameObject>(
                 AssetsAddressablesConstants.IN_GAME_MENU_SCREEN);
 
-            InGameMenuScreen = _container.InstantiatePrefab(prefab);
+            InGameMenuScreen = Object.Instantiate(prefab);
             return InGameMenuScreen;
         }
 
@@ -50,7 +46,7 @@ namespace Services.Factories.UIFactory
             var prefab = await _assetsAddressableService.GetAsset<GameObject>(
                 AssetsAddressablesConstants.MAIN_MENU_SCREEN);
 
-            MainMenuScreen = _container.InstantiatePrefab(prefab);
+            MainMenuScreen = Object.Instantiate(prefab);
             return MainMenuScreen;
         }
 
@@ -59,7 +55,7 @@ namespace Services.Factories.UIFactory
             var prefab = await _assetsAddressableService.GetAsset<GameObject>(
                 AssetsAddressablesConstants.FOLDING_THE_PUZZLE_SCREEN);
 
-            FoldingThePuzzle = _container.InstantiatePrefab(prefab);
+            FoldingThePuzzle = Object.Instantiate(prefab);
             return FoldingThePuzzle;
         }
 
@@ -76,6 +72,7 @@ namespace Services.Factories.UIFactory
         public void DestroyInGameMenuScreen()
         {
             Object.Destroy(InGameMenuScreen);
+            Debug.Log("DestroyInGameMenuScreen");
         }
 
         public void DestroyFoldingThePuzzle()

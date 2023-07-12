@@ -15,6 +15,11 @@ namespace Services.AssetsAddressablesProvider
         private readonly Dictionary<string, AsyncOperationHandle> _completedOperations = new();
         private readonly Dictionary<string, List<AsyncOperationHandle>> _handles = new();
 
+        public AssetsAddressablesProvider()
+        {
+            Initialize();
+        }
+
         public void Initialize()
         {
             Addressables.InitializeAsync();
