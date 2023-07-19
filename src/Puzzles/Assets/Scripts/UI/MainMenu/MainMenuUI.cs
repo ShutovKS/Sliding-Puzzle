@@ -16,31 +16,22 @@ namespace UI.MainMenu
         [SerializeField] private Button _settingButton;
         [SerializeField] private Button _exitButton;
 
-        public void RegisterStartButtonListener(UnityAction action)
-        {
-            _startButton.onClick.AddListener(action);
-        }
-
-        public void RegisterSettingButtonListener(UnityAction action)
-        {
-            _settingButton.onClick.AddListener(action);
-        }
-
-        public void RegisterExitButtonListener(UnityAction action)
-        {
-            _exitButton.onClick.AddListener(action);
-        }
-
         public void RemoveAllListeners()
         {
             _startButton.onClick.RemoveAllListeners();
             _settingButton.onClick.RemoveAllListeners();
             _exitButton.onClick.RemoveAllListeners();
         }
-
-        public void PanelSetActive(bool isActive)
+        
+        public void Clear()
         {
-            _mainPanel.SetActive(isActive);
+            RemoveAllListeners();
         }
+
+        public void RegisterStartButtonListener(UnityAction action) => _startButton.onClick.AddListener(action);
+
+        public void RegisterSettingButtonListener(UnityAction action) => _settingButton.onClick.AddListener(action);
+
+        public void RegisterExitButtonListener(UnityAction action) => _exitButton.onClick.AddListener(action);
     }
 }

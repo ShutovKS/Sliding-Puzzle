@@ -14,83 +14,39 @@ namespace UI.InGameMenu
     public class InGameMenuUI : MonoBehaviour
     {
         [SerializeField] private Button _backButton;
-        [SerializeField] private RectTransform _scrollViewportRectTransform;
-        [SerializeField] private ScrollRect _scrollRect;
+        [SerializeField] private CategoriesInfoScrollViewUI _categoriesScroll;
+        [SerializeField] private PuzzlesInfoScrollViewUI _puzzlesScroll;
 
-        private readonly Dictionary<string, GameObject> _panels = new();
-        private GameObject _currentPanel;
-
-        public void AddPanels(RectTransform[] panels, string categoriesId)
+        public void OpenCategoriesPanel()
         {
-            if (!_panels.TryGetValue(categoriesId, out var categoryInformationPanel))
-            {
-                var resources = new DefaultControls.Resources();
-                categoryInformationPanel = DefaultControls.CreatePanel(resources);
-                categoryInformationPanel.GetComponent<Image>().enabled = false;
-                categoryInformationPanel.transform.SetParent(_scrollViewportRectTransform, false);
-
-                var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
-                informationPanelRectTransform.anchorMin = new Vector2(0, 1);
-                informationPanelRectTransform.anchorMax = new Vector2(1, 1);
-                informationPanelRectTransform.pivot = new Vector2(0, 1);
-                informationPanelRectTransform.sizeDelta = new Vector2(0, 0);
-                informationPanelRectTransform.anchoredPosition = new Vector2(0, 0);
-            }
-
-            categoryInformationPanel.SetActive(true);
-
-            foreach (var panel in panels)
-            {
-                panel.SetParent(categoryInformationPanel.transform, false);
-                var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
-
-                var currentWidth = informationPanelRectTransform.rect.width;
-                var panelSizeDelta = panel.sizeDelta;
-                var panelsPerRow = (int)(currentWidth * (1f / panelSizeDelta.x));
-                var indentX = (currentWidth - (panelSizeDelta.x * panelsPerRow)) * (1f / (panelsPerRow - 1));
-
-                var childCount = categoryInformationPanel.transform.childCount;
-                var rowCount = Mathf.CeilToInt(childCount * (1f / panelsPerRow)) - 1;
-                var column = (childCount - 1) % panelsPerRow;
-
-                var panelX = panelSizeDelta.x * (0.5f + column) + indentX * column;
-                var panelY = -panelSizeDelta.y * (rowCount * 1.1f + 0.5f);
-
-                panel.anchoredPosition = new Vector2(panelX, panelY);
-
-                var totalHeight = (rowCount + 1) * (panel.sizeDelta.y * (1 + rowCount * 0.05f));
-
-                var parentPanelSizeDelta = informationPanelRectTransform.sizeDelta;
-                informationPanelRectTransform.sizeDelta = new Vector2(parentPanelSizeDelta.x, totalHeight);
-            }
-
-            _panels[categoriesId] = categoryInformationPanel;
-            categoryInformationPanel.SetActive(false);
+            _categoriesScroll.SetActivePanel(true);
+            _puzzlesScroll.SetActivePanel(false);
         }
 
-        public void SwitchPanel(string categoriesId, UnityAction listener)
+        public void OpenPuzzleInfoPanel(string category)
         {
-            if (_currentPanel != null)
-                _currentPanel.SetActive(false);
-
-            if (!_panels.TryGetValue(categoriesId, out var panel))
-                throw new Exception("Panel not found");
-
-            panel.SetActive(true);
-            _currentPanel = panel;
-            _scrollRect.content = panel.GetComponent<RectTransform>();
-            _backButton.onClick.RemoveAllListeners();
-            _backButton.onClick.AddListener(listener);
+            _categoriesScroll.SetActivePanel(false);
+            _puzzlesScroll.SetActivePanel(true);
+            _puzzlesScroll.SwitchPanel(category);
         }
 
         public void Clear()
         {
-            foreach (var panel in _panels.Values)
-                Destroy(panel);
-
-            _panels.Clear();
-            _currentPanel = null;
             _backButton.onClick.RemoveAllListeners();
+            _categoriesScroll.Clear();
+            _puzzlesScroll.Clear();
         }
+
+        public void AddCategoriesPanel(RectTransform[] panels) =>
+            _categoriesScroll.AddPanels(panels);
+
+        public void AddPuzzlesPanel(RectTransform[] panels, string category) =>
+            _puzzlesScroll.AddPanels(panels, category);
+
+        public void RegisterBackButtonListener(UnityAction listener) =>
+            _backButton.onClick.AddListener(listener);
+
+        public void ClearBackButtonListener() =>
+            _backButton.onClick.RemoveAllListeners();
     }
 }

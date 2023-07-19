@@ -28,7 +28,6 @@ namespace Infrastructure.ProjectStateMachine.States
         private readonly IUIFactory _uiFactory;
         private Vector2Int[,] _currentPositions;
         private Vector2Int _emptyPosition;
-        private GameObject _foldingThePuzzleInstance;
         private FoldingThePuzzleGameOverUI _gameOverUI;
 
         private FoldingThePuzzleImageSampleUI _imageSampleUI;
@@ -78,20 +77,21 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private async Task CreatedUI()
         {
+            GameObject foldingThePuzzleInstance;
             if (_uiFactory.FoldingThePuzzle == null)
             {
-                _foldingThePuzzleInstance = await _uiFactory.CreatedFoldingThePuzzle();
+                foldingThePuzzleInstance = await _uiFactory.CreatedFoldingThePuzzle();
             }
             else
             {
                 _uiFactory.FoldingThePuzzle.SetActive(true);
-                _foldingThePuzzleInstance = _uiFactory.FoldingThePuzzle;
+                foldingThePuzzleInstance = _uiFactory.FoldingThePuzzle;
             }
 
-            _imageSampleUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleImageSampleUI>();
-            _gameOverUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleGameOverUI>();
-            _puzzlesUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzlePuzzlesUI>();
-            _menuUI = _foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleMenuUI>();
+            _imageSampleUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleImageSampleUI>();
+            _gameOverUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleGameOverUI>();
+            _puzzlesUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzlePuzzlesUI>();
+            _menuUI = foldingThePuzzleInstance.GetComponentInChildren<FoldingThePuzzleMenuUI>();
 
             SetUpGameOverUI();
             SetUpImageSampleUI();
@@ -100,7 +100,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void DestroyUI()
         {
-            _foldingThePuzzleInstance.SetActive(false);
+            _uiFactory.FoldingThePuzzle.SetActive(false);
         }
 
         private void SetUpGameOverUI()

@@ -34,18 +34,18 @@ namespace Infrastructure.ProjectStateMachine.States
         private readonly ILoadPuzzlesCatalogData _loadPuzzlesCatalogData;
 
         private InGameMenuUI _inGameMenuUI;
-        private const string CATEGORY_ID = "CategoryInformation";
 
         public async void OnEnter()
         {
             await CreatedUI();
-            await CreatedCategoryInformationUI();
-            await CreatedPuzzlesInformationUI();
-            OpenPanelCategoryInformation();
+            await CreatedCategoryInfoUI();
+            await CreatedPuzzlesInfoUI();
+            OpenPanelCategoryInfo();
         }
 
         public void OnExit()
         {
+            Clear();
             DestroyUI();
         }
 
@@ -66,12 +66,16 @@ namespace Infrastructure.ProjectStateMachine.States
         private void DestroyUI()
         {
             _uiFactory.InGameMenuScreen.SetActive(false);
+        }
+
+        private void Clear()
+        {
             _inGameMenuUI.Clear();
         }
 
-        private async Task CreatedCategoryInformationUI()
+        private async Task CreatedCategoryInfoUI()
         {
-            var categoryInformation = GetCategoryInformation();
+            var categoryInformation = GetCategoryInfo();
 
             var rectTransforms = new RectTransform[categoryInformation.Count];
 
@@ -86,22 +90,22 @@ namespace Infrastructure.ProjectStateMachine.States
                 categoryInformationUIComponent.SetUp(
                     category.Image,
                     category.Name,
-                    () => OpenPanel(category.Id, OpenPanelCategoryInformation));
+                    () => OpenPanelPuzzleInfo(category.Id));
 
                 rectTransforms[categoryInformation.IndexOf(category)] =
                     categoryInformationUI.GetComponent<RectTransform>();
             }
 
-            _inGameMenuUI.AddPanels(rectTransforms, CATEGORY_ID);
+            _inGameMenuUI.AddCategoriesPanel(rectTransforms);
         }
 
-        private async Task CreatedPuzzlesInformationUI()
+        private async Task CreatedPuzzlesInfoUI()
         {
-            var categoryInformation = GetCategoryInformation();
+            var categoryInformation = GetCategoryInfo();
 
             foreach (var category in categoryInformation)
             {
-                var puzzlesInformation = GetPuzzlesInformation(category.Id);
+                var puzzlesInformation = GetPuzzlesInfo(category.Id);
 
                 var rectTransforms = new RectTransform[puzzlesInformation.Count];
 
@@ -123,26 +127,30 @@ namespace Infrastructure.ProjectStateMachine.States
                         puzzleInformationUI.GetComponent<RectTransform>();
                 }
 
-                _inGameMenuUI.AddPanels(rectTransforms, category.Id);
+                _inGameMenuUI.AddPuzzlesPanel(rectTransforms, category.Id);
             }
         }
-        
-        private void OpenPanelCategoryInformation()
+
+        private void OpenPanelCategoryInfo()
         {
-            _inGameMenuUI.SwitchPanel(CATEGORY_ID, BackInMainMenu);
+            _inGameMenuUI.OpenCategoriesPanel();
+            _inGameMenuUI.ClearBackButtonListener();
+            _inGameMenuUI.RegisterBackButtonListener(BackInMainMenu);
         }
 
-        private void OpenPanel(string panelName, UnityAction action)
+        private void OpenPanelPuzzleInfo(string panelName)
         {
-            _inGameMenuUI.SwitchPanel(panelName, action);
+            _inGameMenuUI.OpenPuzzleInfoPanel(panelName);
+            _inGameMenuUI.ClearBackButtonListener();
+            _inGameMenuUI.RegisterBackButtonListener(OpenPanelCategoryInfo);
         }
 
-        private List<CategoryInformation> GetCategoryInformation()
+        private List<CategoryInformation> GetCategoryInfo()
         {
             return _loadPuzzlesCatalogData.GetCategoriesInformations();
         }
 
-        private List<PuzzleInformation> GetPuzzlesInformation(string categoryId)
+        private List<PuzzleInformation> GetPuzzlesInfo(string categoryId)
         {
             return _loadPuzzlesCatalogData.GetPuzzlesInformations(categoryId);
         }

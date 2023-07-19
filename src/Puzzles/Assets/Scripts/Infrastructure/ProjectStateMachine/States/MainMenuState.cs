@@ -28,25 +28,33 @@ namespace Infrastructure.ProjectStateMachine.States
 
         public void OnExit()
         {
-            _uiFactory.DestroyMainMenuScreen();
+            Clear();
+            DestroyUI();
         }
 
         public Bootstrap Initializer { get; }
 
         private async Task CreatedUI()
         {
-            var mainMenuInstance = await _uiFactory.CreatedMainMenuScreen();
-
-            if (mainMenuInstance.TryGetComponent<MainMenuUI>(out var mainMenuUI))
+            GameObject mainMenuInstance;
+            if (_uiFactory.MainMenuScreen == null)
             {
-                mainMenuUI.RegisterStartButtonListener(StartGame);
-                mainMenuUI.RegisterSettingButtonListener(Setting);
-                mainMenuUI.RegisterExitButtonListener(ExitFromGame);
+                mainMenuInstance = await _uiFactory.CreatedMainMenuScreen();
             }
             else
             {
-                throw new Exception("MainMenuUI not found");
+                mainMenuInstance = _uiFactory.MainMenuScreen;
+                _uiFactory.MainMenuScreen.SetActive(true);
             }
+
+            if (!mainMenuInstance.TryGetComponent<MainMenuUI>(out var mainMenuUI))
+                throw new Exception("MainMenuUI not found");
+
+            mainMenuUI.RegisterStartButtonListener(StartGame);
+            mainMenuUI.RegisterSettingButtonListener(Setting);
+            mainMenuUI.RegisterExitButtonListener(ExitFromGame);
+
+            return;
 
             void StartGame()
             {
@@ -66,6 +74,16 @@ namespace Infrastructure.ProjectStateMachine.States
                 Application.Quit();
 #endif
             }
+        }
+
+        private void DestroyUI()
+        {
+            _uiFactory.MainMenuScreen.SetActive(false);
+        }
+
+        private void Clear()
+        {
+            _uiFactory.MainMenuScreen.GetComponent<MainMenuUI>().Clear();
         }
     }
 }
