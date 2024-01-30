@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using System.Threading.Tasks;
 using Infrastructure.ProjectStateMachine.Core;
 using Services.Factories.UIFactory;
@@ -11,79 +10,59 @@ using UnityEngine;
 
 namespace Infrastructure.ProjectStateMachine.States
 {
-    public class MainMenuState : IState<Bootstrap>, IEnter, IExit
+    public class MainMenuState : IState<Bootstrap>, IEnter, IExit, IInitialize
     {
         public MainMenuState(Bootstrap initializer, IUIFactory uiFactory)
         {
-            _uiFactory = uiFactory;
             Initializer = initializer;
-        }
-
-        private readonly IUIFactory _uiFactory;
-
-        public async void OnEnter()
-        {
-            await CreatedUI();
-        }
-
-        public void OnExit()
-        {
-            Clear();
-            DestroyUI();
+            _uiFactory = uiFactory;
         }
 
         public Bootstrap Initializer { get; }
 
-        private async Task CreatedUI()
+        private readonly IUIFactory _uiFactory;
+        private MainMenuUI _mainMenuUI;
+
+        public async Task OnInitialize()
         {
-            GameObject mainMenuInstance;
-            if (_uiFactory.MainMenuScreen == null)
-            {
-                mainMenuInstance = await _uiFactory.CreatedMainMenuScreen();
-            }
-            else
-            {
-                mainMenuInstance = _uiFactory.MainMenuScreen;
-                _uiFactory.MainMenuScreen.SetActive(true);
-            }
+            await CreatedMenu();
+        }
 
-            if (!mainMenuInstance.TryGetComponent<MainMenuUI>(out var mainMenuUI))
-                throw new Exception("MainMenuUI not found");
+        public void OnEnter()
+        {
+            _mainMenuUI.IsEnabled = true;
+        }
 
-            mainMenuUI.RegisterStartButtonListener(StartGame);
-            mainMenuUI.RegisterSettingButtonListener(Setting);
-            mainMenuUI.RegisterExitButtonListener(ExitFromGame);
+        public void OnExit()
+        {
+            _mainMenuUI.IsEnabled = false;
+        }
 
-            return;
+        private async Task CreatedMenu()
+        {
+            _mainMenuUI = await _uiFactory.Created<MainMenuUI>();
+            _mainMenuUI.OnExitClicked = OnQuit;
+            _mainMenuUI.OnInstructionsClicked = OnInstructions;
+            _mainMenuUI.OnLevelClicked = OpenMenuInGame;
+        }
 
-            void StartGame()
-            {
-                Initializer.StateMachine.SwitchState<InGameMenuState>();
-            }
-
-            void Setting()
-            {
-                Debug.Log("Setting");
-            }
-
-            void ExitFromGame()
-            {
+        private static void OnQuit()
+        {
 #if UNITY_EDITOR
-                Debug.Log("Exit from game");
+            Debug.Log("Выход из игры.");
 #else
-                Application.Quit();
+            Application.Quit();
 #endif
-            }
         }
 
-        private void DestroyUI()
+        private void OnInstructions()
         {
-            _uiFactory.MainMenuScreen.SetActive(false);
+            Debug.Log($"Открытие меню.");
         }
 
-        private void Clear()
+        private void OpenMenuInGame(int number)
         {
-            _uiFactory.MainMenuScreen.GetComponent<MainMenuUI>().Clear();
+            Initializer.StateMachine.SwitchState<InGameMenuState, int>(number);
         }
     }
 }
