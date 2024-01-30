@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 #endregion
 
@@ -15,9 +16,11 @@ namespace Infrastructure.ProjectStateMachine.Core
             _states = new Dictionary<Type, IState<TInitializer>>(states.Length);
 
             _states = states.ToDictionary(state => state.GetType(), state => state);
+            _statesIsInitialise = states.Where(state => state.Initializer != null).ToDictionary(state => state.GetType(), _ => false);
         }
 
         private readonly Dictionary<Type, IState<TInitializer>> _states;
+        private readonly Dictionary<Type, bool> _statesIsInitialise;
 
         private IState<TInitializer> _currentState;
 
@@ -26,6 +29,8 @@ namespace Infrastructure.ProjectStateMachine.Core
             TryExitPreviousState<TState>();
 
             GetNewState<TState>();
+
+            TryInitializeState<TState>();
 
             TryEnterNewState<TState>();
         }
@@ -36,8 +41,20 @@ namespace Infrastructure.ProjectStateMachine.Core
 
             GetNewState<TState>();
 
+            TryInitializeState<TState>();
+
             TryEnterNewState<TState, T0>(arg);
         }
+
+        private void TryInitializeState<TState>() where TState : IState<TInitializer>
+        {
+            if (_currentState is IInitialize initialize && !_statesIsInitialise[typeof(TState)])
+            {
+                initialize.OnInitialize();
+                _statesIsInitialise[typeof(TState)] = true;
+            }
+        }
+
 
         private void TryExitPreviousState<TState>() where TState : IState<TInitializer>
         {
