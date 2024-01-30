@@ -120,7 +120,7 @@ MonoBehaviour:
   exitButton: {fileID: 7287891994752526056}
   levelPrefab: {fileID: 7296471473048451202}
   levelsContent: {fileID: 6816806137559589652}
-  levelCount: 7
+  levelCount: 8
   startRangeLevel: 2
 --- !u!1 &1661529341031274998
 GameObject:

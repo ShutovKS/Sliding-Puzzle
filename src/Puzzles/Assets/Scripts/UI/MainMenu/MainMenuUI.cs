@@ -12,10 +12,15 @@ namespace UI.MainMenu
 {
     public class MainMenuUI : MonoBehaviour
     {
-        [Header("Action")] 
+        [Header("Properties")] 
         public Action<int> OnLevelClicked;
         public Action OnInstructionsClicked;
         public Action OnExitClicked;
+        public bool IsEnabled
+        {
+            get => canvas.enabled;
+            set => canvas.enabled = value;
+        }
 
         [Header("UI")] 
         [SerializeField] private Canvas canvas;
