@@ -11,17 +11,15 @@ namespace UI.InGameMenu
 {
     public class PuzzleInformationUI : MonoBehaviour
     {
-        [SerializeField] private Image _image;
-        [SerializeField] private TextMeshProUGUI _nameText;
-        [SerializeField] private TextMeshProUGUI _elementsCount;
-        [SerializeField] private Button _puzzleButton;
+        [SerializeField] private Image image;
+        [SerializeField] private TextMeshProUGUI nameText;
+        [SerializeField] private Button puzzleButton;
 
-        public void SetUp(Texture2D image, string name, int elementsCount, UnityAction listener)
+        public void SetUp(UnityAction listener, Texture2D texture = null, string text = "")
         {
-            _image.sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), Vector2.zero);
-            _nameText.text = name;
-            _elementsCount.text = elementsCount.ToString();
-            _puzzleButton.onClick.AddListener(listener);
+            this.image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            nameText.text = text;
+            puzzleButton.onClick.AddListener(listener);
         }
     }
 }

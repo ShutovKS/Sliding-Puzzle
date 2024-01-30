@@ -9,75 +9,52 @@ namespace UI.InGameMenu
     [Serializable]
     public class PuzzlesInfoScrollView
     {
-        [SerializeField] private RectTransform scrollViewportRT;
-        [SerializeField] private ScrollRect scrollRect;
-        [SerializeField] private Canvas canvas;
+        public Action<int> OnPuzzleClicked;
 
-        private readonly Dictionary<string, GameObject> _panels = new();
+        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private Transform contentParent;
+        [SerializeField] private GameObject contentPrefab;
+        [SerializeField] private GameObject puzzlePrefab;
+
+        private readonly Dictionary<int, GameObject> _panels = new();
         private GameObject _currentPanel;
 
-        public void AddPanels(RectTransform[] panels, string categoriesId)
+        public void OpenPanel(int id)
         {
-            if (!_panels.TryGetValue(categoriesId, out var categoryInformationPanel))
+            if (_currentPanel == null)
             {
-                var resources = new DefaultControls.Resources();
-                categoryInformationPanel = DefaultControls.CreatePanel(resources);
-                categoryInformationPanel.GetComponent<Image>().enabled = false;
-                categoryInformationPanel.transform.SetParent(scrollViewportRT, false);
-
-                var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
-                informationPanelRectTransform.anchorMin = new Vector2(0, 1);
-                informationPanelRectTransform.anchorMax = new Vector2(1, 1);
-                informationPanelRectTransform.pivot = new Vector2(0, 1);
-                informationPanelRectTransform.sizeDelta = new Vector2(0, 0);
-                informationPanelRectTransform.anchoredPosition = new Vector2(0, 0);
+                _currentPanel.SetActive(false);
             }
-
-            categoryInformationPanel.SetActive(true);
-
-            foreach (var panel in panels)
+            
+            if (_panels.TryGetValue(id, out var panel))
             {
-                panel.SetParent(categoryInformationPanel.transform, false);
-                var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
-
-                var currentWidth = informationPanelRectTransform.rect.width;
-                var panelSizeDelta = panel.sizeDelta;
-                var panelsPerRow = (int)(currentWidth * (1f / panelSizeDelta.x));
-                var indentX = (currentWidth - (panelSizeDelta.x * panelsPerRow)) * (1f / (panelsPerRow - 1));
-
-                var childCount = categoryInformationPanel.transform.childCount;
-                var rowCount = Mathf.CeilToInt(childCount * (1f / panelsPerRow)) - 1;
-                var column = (childCount - 1) % panelsPerRow;
-
-                var panelX = panelSizeDelta.x * (0.5f + column) + indentX * column;
-                var panelY = -panelSizeDelta.y * (rowCount * 1.1f + 0.5f);
-
-                panel.anchoredPosition = new Vector2(panelX, panelY);
-
-                var totalHeight = (rowCount + 1) * (panel.sizeDelta.y * (1 + rowCount * 0.05f));
-
-                var parentPanelSizeDelta = informationPanelRectTransform.sizeDelta;
-                informationPanelRectTransform.sizeDelta = new Vector2(parentPanelSizeDelta.x, totalHeight);
+                panel.SetActive(true);
+                scrollRect.content = panel.GetComponent<RectTransform>();
+                _currentPanel = panel;
             }
-
-            _panels[categoriesId] = categoryInformationPanel;
-            categoryInformationPanel.SetActive(false);
+            else
+            {
+                throw new Exception($"Панели с id {id} не существует.");
+            }
         }
 
-        public void SwitchPanel(string categoriesId)
+        public void AddPanels(int id, params (int id, Texture2D texture)[] puzzles)
         {
-            if (_currentPanel != null) _currentPanel.SetActive(false);
-
-            if (!_panels.TryGetValue(categoriesId, out var panel)) throw new Exception("Panel not found");
-
-            panel.SetActive(true);
-            _currentPanel = panel;
+            var panel = Object.Instantiate(contentPrefab, contentParent);
             scrollRect.content = panel.GetComponent<RectTransform>();
-        }
+            _panels[id] = panel;
+            var panelTransform = panel.transform;
 
-        public void SetActivePanel(bool isActive)
-        {
-            canvas.enabled = isActive;
+            var instance = Object.Instantiate(puzzlePrefab, panelTransform);
+            instance.GetComponent<PuzzleInformationUI>().SetUp(() => OnPuzzleClicked?.Invoke(-1), text: $"{id}x{id}");
+
+            foreach (var (puzzleId, texture) in puzzles)
+            {
+                instance = Object.Instantiate(puzzlePrefab, panelTransform);
+                instance.GetComponent<PuzzleInformationUI>().SetUp(() => OnPuzzleClicked?.Invoke(puzzleId), texture);
+            }
+
+            OpenPanel(id);
         }
 
         public void Clear()

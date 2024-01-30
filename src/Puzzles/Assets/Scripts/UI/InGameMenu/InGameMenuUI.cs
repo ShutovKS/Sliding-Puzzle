@@ -13,48 +13,25 @@ namespace UI.InGameMenu
 {
     public class InGameMenuUI : MonoBehaviour
     {
+        [field: SerializeField] public PuzzlesInfoScrollView PuzzlesScroll { get; private set; }
         [SerializeField] private Button backButton;
-        [SerializeField] private CategoriesInfoScrollView categoriesScroll;
-        [SerializeField] private PuzzlesInfoScrollView puzzlesScroll;
+        [SerializeField] private Canvas canvas;
 
-        public void OpenCategoriesPanel()
+        public bool IsEnabled
         {
-            categoriesScroll.SetActivePanel(true);
-            puzzlesScroll.SetActivePanel(false);
-        }
-
-        public void OpenPuzzleInfoPanel(string category)
-        {
-            categoriesScroll.SetActivePanel(false);
-            puzzlesScroll.SetActivePanel(true);
-            puzzlesScroll.SwitchPanel(category);
+            get => canvas.enabled;
+            set => canvas.enabled = value;
         }
 
         public void Clear()
         {
             backButton.onClick.RemoveAllListeners();
-            categoriesScroll.Clear();
-            puzzlesScroll.Clear();
-        }
-
-        public void AddCategoriesPanel(RectTransform[] panels)
-        {
-            categoriesScroll.AddPanels(panels);
-        }
-
-        public void AddPuzzlesPanel(RectTransform[] panels, string category)
-        {
-            puzzlesScroll.AddPanels(panels, category);
+            PuzzlesScroll.Clear();
         }
 
         public void RegisterBackButtonListener(UnityAction listener)
         {
             backButton.onClick.AddListener(listener);
-        }
-
-        public void ClearBackButtonListener()
-        {
-            backButton.onClick.RemoveAllListeners();
         }
     }
 }
