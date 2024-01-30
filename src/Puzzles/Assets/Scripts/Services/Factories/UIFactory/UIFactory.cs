@@ -78,7 +78,11 @@ namespace Services.Factories.UIFactory
         {
             var type = typeof(T);
 
-            var instance = await _assetsAddressableService.GetAsset<GameObject>(_address[type]);
+            var prefab = await _assetsAddressableService.GetAsset<GameObject>(_address[type]);
+
+            var instance = Object.Instantiate(prefab);
+            
+            Object.DontDestroyOnLoad(instance);
 
             return instance;
         }
