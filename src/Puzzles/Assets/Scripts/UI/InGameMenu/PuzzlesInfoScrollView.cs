@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace UI.InGameMenu
 {
-    public class PuzzlesInfoScrollViewUI : MonoBehaviour
+    [Serializable]
+    public class PuzzlesInfoScrollView
     {
-        [SerializeField] private RectTransform _scrollViewportRT;
-        [SerializeField] private ScrollRect _scrollRect;
-        [SerializeField] private GameObject _panel;
+        [SerializeField] private RectTransform scrollViewportRT;
+        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private Canvas canvas;
 
         private readonly Dictionary<string, GameObject> _panels = new();
         private GameObject _currentPanel;
@@ -21,7 +23,7 @@ namespace UI.InGameMenu
                 var resources = new DefaultControls.Resources();
                 categoryInformationPanel = DefaultControls.CreatePanel(resources);
                 categoryInformationPanel.GetComponent<Image>().enabled = false;
-                categoryInformationPanel.transform.SetParent(_scrollViewportRT, false);
+                categoryInformationPanel.transform.SetParent(scrollViewportRT, false);
 
                 var informationPanelRectTransform = categoryInformationPanel.GetComponent<RectTransform>();
                 informationPanelRectTransform.anchorMin = new Vector2(0, 1);
@@ -64,27 +66,25 @@ namespace UI.InGameMenu
 
         public void SwitchPanel(string categoriesId)
         {
-            if (_currentPanel != null)
-                _currentPanel.SetActive(false);
+            if (_currentPanel != null) _currentPanel.SetActive(false);
 
-            if (!_panels.TryGetValue(categoriesId, out var panel))
-                throw new Exception("Panel not found");
+            if (!_panels.TryGetValue(categoriesId, out var panel)) throw new Exception("Panel not found");
 
             panel.SetActive(true);
             _currentPanel = panel;
-            _scrollRect.content = panel.GetComponent<RectTransform>();
+            scrollRect.content = panel.GetComponent<RectTransform>();
         }
-        
+
         public void SetActivePanel(bool isActive)
         {
-            _panel.SetActive(isActive);
+            canvas.enabled = isActive;
         }
 
         public void Clear()
         {
             foreach (var panel in _panels.Values)
             {
-                Destroy(panel);
+                Object.Destroy(panel);
             }
 
             _panels.Clear();

@@ -1,18 +1,22 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace UI.InGameMenu
 {
-    public class CategoriesInfoScrollViewUI : MonoBehaviour
+    [Serializable]
+    public class CategoriesInfoScrollView
     {
-        [SerializeField] private RectTransform _scrollViewportRT;
-        [SerializeField] private ScrollRect _scrollRect;
-        [SerializeField] private GameObject _panel;
+        [SerializeField] private RectTransform scrollViewportRectTransform;
+        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private Canvas canvas;
 
         private GameObject _currentPanel;
-        private readonly float _indentBetweenPanels = 10f;
+        private const float INDENT_BETWEEN_PANELS = 10f;
 
-        public void AddPanels(RectTransform[] panels)
+        public void AddPanels(IEnumerable<RectTransform> panels)
         {
             RectTransform contentPanelRT;
             if (_currentPanel == null)
@@ -20,7 +24,7 @@ namespace UI.InGameMenu
                 var resources = new DefaultControls.Resources();
                 _currentPanel = DefaultControls.CreatePanel(resources);
                 _currentPanel.GetComponent<Image>().enabled = false;
-                _currentPanel.transform.SetParent(_scrollViewportRT, false);
+                _currentPanel.transform.SetParent(scrollViewportRectTransform, false);
 
                 contentPanelRT = _currentPanel.GetComponent<RectTransform>();
                 contentPanelRT.anchorMin = new Vector2(0, 0.5f);
@@ -29,41 +33,41 @@ namespace UI.InGameMenu
                 contentPanelRT.sizeDelta = new Vector2(0, 0);
                 contentPanelRT.anchoredPosition = new Vector2(0, 0);
                 
-                _scrollRect.content = contentPanelRT;
+                scrollRect.content = contentPanelRT;
             }
             else
             {
                 contentPanelRT = _currentPanel.GetComponent<RectTransform>();
             }
 
-            foreach (var panel in panels)
+            foreach (var rectTransform in panels)
             {
-                panel.SetParent(contentPanelRT, false);
+                rectTransform.SetParent(contentPanelRT, false);
 
                 var scrollSizeDelta = contentPanelRT.sizeDelta;
                 scrollSizeDelta.x += contentPanelRT.childCount == 1
-                    ? panel.sizeDelta.x
-                    : panel.sizeDelta.x + _indentBetweenPanels;
+                    ? rectTransform.sizeDelta.x
+                    : rectTransform.sizeDelta.x + INDENT_BETWEEN_PANELS;
 
                 contentPanelRT.sizeDelta = scrollSizeDelta;
 
-                var panelAnchoredPosition = panel.anchoredPosition;
-                panelAnchoredPosition.x = scrollSizeDelta.x - panel.sizeDelta.x * 0.5f;
+                var panelAnchoredPosition = rectTransform.anchoredPosition;
+                panelAnchoredPosition.x = scrollSizeDelta.x - rectTransform.sizeDelta.x * 0.5f;
 
-                panel.anchoredPosition = panelAnchoredPosition;
+                rectTransform.anchoredPosition = panelAnchoredPosition;
             }
         }
 
         public void SetActivePanel(bool isActive)
         {
-            _panel.SetActive(isActive);
+            canvas.enabled = isActive;
         }
 
         public void Clear()
         {
             if (_currentPanel != null)
             {
-                Destroy(_currentPanel);
+                Object.Destroy(_currentPanel);
                 _currentPanel = null;
             }
         }
