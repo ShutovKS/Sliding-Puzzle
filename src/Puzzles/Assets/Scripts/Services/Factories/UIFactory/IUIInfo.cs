@@ -1,6 +1,10 @@
 ﻿#region
 
+#nullable enable
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #endregion
 
@@ -8,9 +12,6 @@ namespace Services.Factories.UIFactory
 {
     public interface IUIInfo
     {
-        GameObject LoadingScreen { get; }
-        GameObject MainMenuScreen { get; }
-        GameObject InGameMenuScreen { get; }
-        GameObject FoldingThePuzzle { get; }
+        T? GetUI<T>() where T : Object;
     }
 }

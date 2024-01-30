@@ -1,9 +1,16 @@
 ﻿#region
 
+#nullable enable
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Data.AssetsAddressablesConstants;
 using Services.AssetsAddressablesProvider;
+using UI.FoldingThePuzzle;
+using UI.InGameMenu;
+using UI.MainMenu;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #endregion
 
@@ -17,67 +24,63 @@ namespace Services.Factories.UIFactory
         }
 
         private readonly IAssetsAddressablesProvider _assetsAddressableService;
-        
-        public GameObject LoadingScreen { get; private set; }
-        public GameObject MainMenuScreen { get; private set; }
-        public GameObject InGameMenuScreen { get; private set; }
-        public GameObject FoldingThePuzzle { get; private set; }
+        private readonly Dictionary<Type, Object> _uis = new();
 
-        public async Task<GameObject> CreatedLoadingScreen()
+        private static readonly Dictionary<Type, string> _address = new()
         {
-            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
-                AssetsAddressablesConstants.LOADING_SCREEN);
+            { typeof(MainMenuUI), AssetsAddressablesConstants.MAIN_MENU_SCREEN },
+            { typeof(InGameMenuUI), AssetsAddressablesConstants.IN_GAME_MENU_SCREEN },
+            { typeof(FoldingThePuzzlePuzzlesUI), AssetsAddressablesConstants.IN_GAME_MENU_SCREEN },
+        };
 
-            LoadingScreen = Object.Instantiate(prefab);
-            return LoadingScreen;
+        public T? GetUI<T>() where T : Object
+        {
+            if (_uis.TryGetValue(typeof(T), out var ui))
+            {
+                return (T)ui;
+            }
+
+            return null;
         }
 
-        public async Task<GameObject> CreatedInGameMenuScreen()
+        public async Task<T> Created<T>() where T : Object
         {
-            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
-                AssetsAddressablesConstants.IN_GAME_MENU_SCREEN);
+            if (_uis.ContainsKey(typeof(T)))
+            {
+                throw new Exception($"Уже существует пользоательский интерфейс {typeof(T).Name}.");
+            }
 
-            InGameMenuScreen = Object.Instantiate(prefab);
-            return InGameMenuScreen;
+            var instance = await Instance<T>();
+
+            if (!instance.TryGetComponent<T>(out var ui))
+            {
+                throw new Exception($"Компонент {typeof(T).Name} не найден.");
+            }
+
+            _uis[typeof(T)] = ui;
+
+            return ui;
         }
 
-        public async Task<GameObject> CreatedMainMenuScreen()
+        public void Destroy<T>() where T : Object
         {
-            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
-                AssetsAddressablesConstants.MAIN_MENU_SCREEN);
+            if (!_uis.ContainsKey(typeof(T)))
+            {
+                throw new Exception($"Объект типа {typeof(T).Name} не существует.");
+            }
 
-            MainMenuScreen = Object.Instantiate(prefab);
-            return MainMenuScreen;
+            Object.Destroy(_uis[typeof(T)]);
+
+            _uis.Remove(typeof(T));
         }
 
-        public async Task<GameObject> CreatedFoldingThePuzzle()
+        private async Task<GameObject> Instance<T>() where T : Object
         {
-            var prefab = await _assetsAddressableService.GetAsset<GameObject>(
-                AssetsAddressablesConstants.FOLDING_THE_PUZZLE_SCREEN);
+            var type = typeof(T);
 
-            FoldingThePuzzle = Object.Instantiate(prefab);
-            return FoldingThePuzzle;
-        }
+            var instance = await _assetsAddressableService.GetAsset<GameObject>(_address[type]);
 
-        public void DestroyLoadingScreen()
-        {
-            Object.Destroy(LoadingScreen);
-        }
-
-        public void DestroyMainMenuScreen()
-        {
-            Object.Destroy(MainMenuScreen);
-        }
-
-        public void DestroyInGameMenuScreen()
-        {
-            Object.Destroy(InGameMenuScreen);
-            Debug.Log("DestroyInGameMenuScreen");
-        }
-
-        public void DestroyFoldingThePuzzle()
-        {
-            Object.Destroy(FoldingThePuzzle);
+            return instance;
         }
     }
 }
