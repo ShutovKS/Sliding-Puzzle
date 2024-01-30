@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 #endregion
@@ -24,33 +25,33 @@ namespace Infrastructure.ProjectStateMachine.Core
 
         private IState<TInitializer> _currentState;
 
-        public void SwitchState<TState>() where TState : IState<TInitializer>
+        public async void SwitchState<TState>() where TState : IState<TInitializer>
         {
             TryExitPreviousState<TState>();
 
             GetNewState<TState>();
 
-            TryInitializeState<TState>();
+            await TryInitializeState<TState>();
 
             TryEnterNewState<TState>();
         }
 
-        public void SwitchState<TState, T0>(T0 arg) where TState : IState<TInitializer>
+        public async void SwitchState<TState, T0>(T0 arg) where TState : IState<TInitializer>
         {
             TryExitPreviousState<TState>();
 
             GetNewState<TState>();
 
-            TryInitializeState<TState>();
+            await TryInitializeState<TState>();
 
             TryEnterNewState<TState, T0>(arg);
         }
 
-        private void TryInitializeState<TState>() where TState : IState<TInitializer>
+        private async Task TryInitializeState<TState>() where TState : IState<TInitializer>
         {
             if (_currentState is IInitialize initialize && !_statesIsInitialise[typeof(TState)])
             {
-                initialize.OnInitialize();
+                await initialize.OnInitialize();
                 _statesIsInitialise[typeof(TState)] = true;
             }
         }

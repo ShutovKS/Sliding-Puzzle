@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace Infrastructure.ProjectStateMachine.Core
 {
     public interface IInitialize
     {
-        void OnInitialize();
+        Task OnInitialize();
     }
 }
