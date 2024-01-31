@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 namespace UI.FoldingThePuzzle
 {
     [Serializable]
-    public class PuzzlesGameplayUI
+    public class GameplayUI
     {
         [SerializeField] private GameObject partsPanel;
 

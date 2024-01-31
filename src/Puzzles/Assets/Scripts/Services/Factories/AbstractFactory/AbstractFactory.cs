@@ -17,6 +17,13 @@ namespace Services.Factories.AbstractFactory
         }
 
         private readonly IAssetsAddressablesProvider _assetsAddressablesProvider;
+        
+        public async Task<T> CreateInstance<T>(GameObject prefab) where T : Object
+        {
+            var instance = Object.Instantiate(prefab);
+
+            return instance.GetComponent<T>();
+        }
 
         public async Task<T> CreateInstance<T>(string path) where T : Object
         {
