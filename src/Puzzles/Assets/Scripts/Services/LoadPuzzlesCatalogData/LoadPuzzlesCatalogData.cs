@@ -25,8 +25,6 @@ namespace Services.LoadPuzzlesCatalogData
                 var puzzleInformation = new PuzzleInformation($"{image.GetInstanceID()}", image);
                 _puzzleInformation.Add(puzzleInformation.Id, puzzleInformation);
             }
-            
-            Debug.Log("LoadPuzzlesCatalogData: LoadData" + _puzzleInformation.Count);
         }
 
         public List<PuzzleInformation> GetPuzzlesInformation()

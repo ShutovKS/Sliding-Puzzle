@@ -16,12 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: af7813603fc15fa498e9e4a4f811841c
-  m_SerializeEntries:
-  - m_GUID: eb8fc4d29b711ba41b05c6a0408f7af6
-    m_Address: animals
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d0036e2203b665242a571c2d7e3cdb47, type: 2}
   m_SchemaSet:

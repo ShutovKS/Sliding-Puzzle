@@ -169,7 +169,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5531776156046903650}
-  - component: {fileID: 3007307661351337779}
   m_Layer: 5
   m_Name: GameOver
   m_TagString: Untagged
@@ -199,29 +198,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &3007307661351337779
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1135940478233895079}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1 &1776419695700605152
 GameObject:
   m_ObjectHideFlags: 0
@@ -977,7 +953,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3969835809216961580}
-  - component: {fileID: 2627222024938142438}
   m_Layer: 5
   m_Name: Puzzle
   m_TagString: Untagged
@@ -1006,29 +981,6 @@ RectTransform:
   m_AnchoredPosition: {x: -320, y: 0}
   m_SizeDelta: {x: 1056, y: 1056}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &2627222024938142438
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4932126128803933291}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1 &4992681755528731206
 GameObject:
   m_ObjectHideFlags: 0
@@ -1947,13 +1899,13 @@ MonoBehaviour:
   <GameOverUI>k__BackingField:
     image: {fileID: 1610027905592589346}
     exitButton: {fileID: 3886010181750125181}
-    canvas: {fileID: 3007307661351337779}
+    panel: {fileID: 1135940478233895079}
   <ImageSampleUI>k__BackingField:
     image: {fileID: 2479977471455230583}
   <MenuUI>k__BackingField:
     timerText: {fileID: 3765264507527651760}
     resetButton: {fileID: 1061418156632064619}
     exitButton: {fileID: 6884389081958155409}
-  <PuzzlesGameplayUI>k__BackingField:
+  <GameplayUI>k__BackingField:
     partsPanel: {fileID: 8832220607056526228}
   canvas: {fileID: 4032893609503506159}

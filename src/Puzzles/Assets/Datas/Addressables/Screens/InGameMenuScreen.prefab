@@ -33,7 +33,7 @@ RectTransform:
   m_Father: {fileID: 8952098508788705589}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -144,7 +144,7 @@ RectTransform:
   m_Father: {fileID: 150255218859624522}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -428,12 +428,12 @@ GameObject:
   - component: {fileID: 4054278699227220041}
   - component: {fileID: 7712226076814300864}
   m_Layer: 5
-  m_Name: Content Prefab
+  m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8732675979021051519
 RectTransform:
   m_ObjectHideFlags: 0
@@ -734,9 +734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PuzzlesScroll>k__BackingField:
-    scrollRect: {fileID: 5597862658213698561}
-    contentParent: {fileID: 8249644087185139084}
-    contentPrefab: {fileID: 3693500965921655842}
+    contentTransform: {fileID: 8732675979021051519}
     puzzlePrefab: {fileID: 1321809862030216070, guid: 3757ffdb7390fb14ea9d6d53b4fe5c6d, type: 3}
   backButton: {fileID: 2143361592678554371}
   canvas: {fileID: 6036000011019118433}
@@ -758,7 +756,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7198696197753078247
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1054,7 +1052,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &627054198842094238
 RectTransform:
   m_ObjectHideFlags: 0

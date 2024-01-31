@@ -16,42 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 55652d026f3d2de40bc828842e3cffe8
-  m_SerializeEntries:
-  - m_GUID: db474e697558d3343ae2a4170afc6795
-    m_Address: cat_ball
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ce6ba9b7a13e84e4b854c2308d9f636c
-    m_Address: USSR_dog
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aaa962003f94b6e49b8c675781fd0e8e
-    m_Address: hedgehog
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6febd8e348880ad4a9bf145804b619df
-    m_Address: pig_on_a_tractor
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8768517d227130b48844ae97d435311c
-    m_Address: frog
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5a4bbc1e15e614a4795d2a574f993be9
-    m_Address: fat_cat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8ec23a641b0ac5348bdb099f9ea75f85
-    m_Address: cat_with_burger
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d0036e2203b665242a571c2d7e3cdb47, type: 2}
   m_SchemaSet:
