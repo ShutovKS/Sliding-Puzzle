@@ -68,6 +68,8 @@ namespace Infrastructure.ProjectStateMachine.States
 
             CreatedParts();
             TimerStart();
+            
+            _foldingThePuzzlePuzzlesUI.IsEnabled = true;
         }
 
         public void OnExit()
