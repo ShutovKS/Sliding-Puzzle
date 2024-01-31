@@ -23,6 +23,7 @@ namespace UI.MainMenu
         }
 
         [Header("UI")] 
+        [field: SerializeField] public Instructions instructions;
         [SerializeField] private Canvas canvas;
         [SerializeField] private Button instructionsButton;
         [SerializeField] private Button exitButton;
@@ -50,6 +51,8 @@ namespace UI.MainMenu
             }
             
             CreatedLevelButton(index, "Image", () => OnLevelClicked?.Invoke(0));
+            
+            instructions.Initialize();
         }
         
         private void CreatedLevelButton(int index, string name, Action OnClicked)
@@ -74,6 +77,25 @@ namespace UI.MainMenu
 
             var button = levelButton.GetComponent<Button>();
             button.onClick.AddListener(() => OnClicked?.Invoke());
+        }
+    }
+
+    [Serializable]
+    public class Instructions
+    {
+        public Action OnCloseClicked;
+        
+        [SerializeField] private GameObject panel; 
+        [SerializeField] private Button closeButton;
+        
+        public void Initialize()
+        {
+            closeButton.onClick.AddListener(() => OnCloseClicked?.Invoke());
+        }
+        
+        public void SetActive(bool isActive)
+        {
+            panel.SetActive(isActive);
         }
     }
 }

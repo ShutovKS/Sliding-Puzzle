@@ -26,6 +26,7 @@ namespace Infrastructure.ProjectStateMachine.States
         public async Task OnInitialize()
         {
             await CreatedMenu();
+            _mainMenuUI.instructions.OnCloseClicked = () => _mainMenuUI.instructions.SetActive(false);
         }
 
         public void OnEnter()
@@ -57,7 +58,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void OnInstructions()
         {
-            Debug.Log($"Открытие меню.");
+            _mainMenuUI.instructions.SetActive(true);
         }
 
         private void OpenMenuInGame(int number)
