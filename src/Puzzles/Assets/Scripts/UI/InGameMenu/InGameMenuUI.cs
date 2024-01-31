@@ -15,12 +15,14 @@ namespace UI.InGameMenu
     {
         public Action OnBackClicked;
         [field: SerializeField] public PuzzlesInfoScrollView PuzzlesScroll { get; private set; }
+        [field: SerializeField] public NumberParts NumberParts { get; private set; }
         [SerializeField] private Button backButton;
         [SerializeField] private Canvas canvas;
 
         private void Awake()
         {
             backButton.onClick.AddListener(() => OnBackClicked?.Invoke());
+            NumberParts.Initialize();
         }
 
         public bool IsEnabled

@@ -33,11 +33,16 @@ namespace Infrastructure.ProjectStateMachine.States
         private Dictionary<string, PuzzleInformation> _puzzlesInformation;
         private InGameMenuUI _inGameMenuUI;
 
+        private string _currentKey;
+        private int _currentNumber;
+
         public async Task OnInitialize()
         {
             await CreatedUI();
             _inGameMenuUI.OnBackClicked += BackInMainMenu;
-            _inGameMenuUI.PuzzlesScroll.OnPuzzleClicked += StartGameImage;
+            _inGameMenuUI.PuzzlesScroll.OnPuzzleClicked += ClickGameImage;
+            _inGameMenuUI.NumberParts.OnBackClicked += () => _inGameMenuUI.NumberParts.SetActive(false);
+            _inGameMenuUI.NumberParts.OnCompleteClicked += StartGameImage;
         }
 
         public void OnEnter(int number)
@@ -54,6 +59,9 @@ namespace Infrastructure.ProjectStateMachine.States
 
         public void OnExit()
         {
+            _inGameMenuUI.NumberParts.SetActive(false);
+            _currentKey = null;
+            _currentNumber = 0;
             ClosePuzzlesInfoUI();
             _inGameMenuUI.IsEnabled = false;
         }
@@ -91,10 +99,19 @@ namespace Infrastructure.ProjectStateMachine.States
             return puzzlesInformation.ToArray();
         }
 
-        private void StartGameImage(string key)
+        private void ClickGameImage(string key)
         {
-            var puzzleInformation = _puzzlesInformation[key];
-            puzzleInformation.ElementsCount = 2;
+            _currentKey = key;
+
+            _inGameMenuUI.NumberParts.SetActive(true);
+        }
+
+        private void StartGameImage(int number)
+        {
+            _currentNumber = number;
+
+            var puzzleInformation = _puzzlesInformation[_currentKey];
+            puzzleInformation.ElementsCount = _currentNumber;
 
             Initializer.StateMachine.SwitchState<FoldingThePuzzleState, PuzzleInformation>(puzzleInformation);
         }
@@ -102,7 +119,7 @@ namespace Infrastructure.ProjectStateMachine.States
         private void StartGameNumber(int number)
         {
             var puzzleInformation = new PuzzleInformation(null, null, number);
-            
+
             Initializer.StateMachine.SwitchState<FoldingThePuzzleState, PuzzleInformation>(puzzleInformation);
         }
 
