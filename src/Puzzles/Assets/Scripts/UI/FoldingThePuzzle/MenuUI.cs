@@ -13,18 +13,17 @@ namespace UI.FoldingThePuzzle
     [Serializable]
     public class MenuUI
     {
+        public Action OnBackClicked;
+        public Action OnResetClicked;
+
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private Button resetButton;
         [SerializeField] private Button exitButton;
-
-        public void RegisterResetListener(UnityAction action)
+        
+        public void Initialize()
         {
-            resetButton.onClick.AddListener(action);
-        }
-
-        public void RegisterExitListener(UnityAction action)
-        {
-            exitButton.onClick.AddListener(action);
+            resetButton.onClick.AddListener(() => OnResetClicked?.Invoke());
+            exitButton.onClick.AddListener(() => OnBackClicked?.Invoke());
         }
 
         public void UpdateTimer(string text)
@@ -35,8 +34,6 @@ namespace UI.FoldingThePuzzle
         public void Clear()
         {
             timerText.text = string.Empty;
-            resetButton.onClick.RemoveAllListeners();
-            exitButton.onClick.RemoveAllListeners();
         }
     }
 }

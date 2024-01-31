@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace UI.FoldingThePuzzle
@@ -10,6 +11,12 @@ namespace UI.FoldingThePuzzle
         [field: SerializeField] public GameplayUI GameplayUI { get; private set; }
 
         [SerializeField] private Canvas canvas;
+
+        public void Awake()
+        {
+            GameOverUI.Initialize();
+            MenuUI.Initialize();
+        }
 
         public bool IsEnabled
         {

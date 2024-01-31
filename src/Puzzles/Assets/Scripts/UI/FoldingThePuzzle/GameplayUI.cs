@@ -19,7 +19,7 @@ namespace UI.FoldingThePuzzle
         private Dictionary<GameObject, Vector2Int> _buttonsInstanceToVectorDictionary;
         private Dictionary<Vector2Int, GameObject> _vectorToButtonsInstanceDictionary;
 
-        public void PanelSetActive(bool value)
+        public void SetActive(bool value)
         {
             partsPanel.SetActive(value);
         }
@@ -79,13 +79,9 @@ namespace UI.FoldingThePuzzle
             var priceInstance = _vectorToButtonsInstanceDictionary[oldPosition];
 
             var rectTransform = priceInstance.GetComponent<RectTransform>();
-            rectTransform.anchorMin = new Vector2(
-                (float)newPosition.x / elementsAmount,
-                (float)newPosition.y / elementsAmount);
+            rectTransform.anchorMin = new Vector2(newPosition.x, newPosition.y) / elementsAmount;
 
-            rectTransform.anchorMax = new Vector2(
-                (float)(newPosition.x + 1) / elementsAmount,
-                (float)(newPosition.y + 1) / elementsAmount);
+            rectTransform.anchorMax = new Vector2(newPosition.x + 1, newPosition.y + 1) / elementsAmount;
 
             rectTransform.offsetMin = new Vector2(0, 0);
             rectTransform.offsetMax = new Vector2(0, 0);
@@ -98,8 +94,8 @@ namespace UI.FoldingThePuzzle
         {
             foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary)
             {
-                buttonInstance.GetComponent<Button>().onClick.AddListener(
-                    () => buttonClick?.Invoke(_buttonsInstanceToVectorDictionary[buttonInstance]));
+                buttonInstance.GetComponent<Button>().onClick.AddListener(() =>
+                    buttonClick?.Invoke(_buttonsInstanceToVectorDictionary[buttonInstance]));
             }
         }
 
@@ -142,7 +138,11 @@ namespace UI.FoldingThePuzzle
 
         public void Clear()
         {
-            foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary) Object.Destroy(buttonInstance);
+            foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary)
+            {
+                Object.Destroy(buttonInstance);
+            }
+
             _buttonsInstanceToVectorDictionary.Clear();
             _vectorToButtonsInstanceDictionary.Clear();
         }

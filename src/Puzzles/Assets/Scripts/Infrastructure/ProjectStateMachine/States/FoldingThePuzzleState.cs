@@ -25,6 +25,8 @@ namespace Infrastructure.ProjectStateMachine.States
             Initializer = initializer;
         }
 
+        public Bootstrap Initializer { get; }
+
         private readonly IUIFactory _uiFactory;
         private FoldingThePuzzlePuzzlesUI _foldingThePuzzlePuzzlesUI;
         private PiecesListTwoDimensional _piecesListTwoDimensional;
@@ -41,6 +43,7 @@ namespace Infrastructure.ProjectStateMachine.States
         public async Task OnInitialize()
         {
             await CreatedUI();
+            _foldingThePuzzlePuzzlesUI.GameOverUI.OnBackClicked += ExitInMainMenu;
         }
 
         public void OnEnter(PuzzleInformation puzzleInformation)
@@ -48,11 +51,15 @@ namespace Infrastructure.ProjectStateMachine.States
             _partsAmount = puzzleInformation.ElementsCount;
             _texture2D = puzzleInformation.Texture2D;
 
-            _textures2D = ImageCutter.CutImage(_texture2D, ImageCutterType.NumberOfParts, _partsAmount, _partsAmount);
+            if (puzzleInformation.Texture2D != null)
+            {
+                _textures2D =
+                    ImageCutter.CutImage(_texture2D, ImageCutterType.NumberOfParts, _partsAmount, _partsAmount);
+            }
 
             _emptyPosition = new Vector2Int(_partsAmount - 1, 0);
             _currentPositions = GenerationPositions.GetRandomPositions(_partsAmount, _emptyPosition);
-            
+
             SetUpGameOverUI();
             SetUpImageSampleUI();
             SetUpMenuUI();
@@ -70,8 +77,6 @@ namespace Infrastructure.ProjectStateMachine.States
             _foldingThePuzzlePuzzlesUI.IsEnabled = false;
         }
 
-        public Bootstrap Initializer { get; }
-
         #region UI
 
         private async Task CreatedUI()
@@ -82,8 +87,7 @@ namespace Infrastructure.ProjectStateMachine.States
         private void SetUpGameOverUI()
         {
             _foldingThePuzzlePuzzlesUI.GameOverUI.SetImage(_texture2D);
-            _foldingThePuzzlePuzzlesUI.GameOverUI.RegisterExitListener(ExitInMainMenu);
-            _foldingThePuzzlePuzzlesUI.GameOverUI.SetActiveFullImagePanel(false);
+            _foldingThePuzzlePuzzlesUI.GameOverUI.SetActive(false);
         }
 
         private void SetUpImageSampleUI()
@@ -93,15 +97,15 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void SetUpMenuUI()
         {
-            _foldingThePuzzlePuzzlesUI.MenuUI.RegisterExitListener(ExitInMainMenu);
-            _foldingThePuzzlePuzzlesUI.MenuUI.RegisterResetListener(ResetParts);
+            _foldingThePuzzlePuzzlesUI.MenuUI.OnBackClicked += ExitInMainMenu;
+            _foldingThePuzzlePuzzlesUI.MenuUI.OnResetClicked += ResetParts;
             _onTimerUpdate += _foldingThePuzzlePuzzlesUI.MenuUI.UpdateTimer;
         }
 
         private void OnAllPartsInPlace()
         {
             TimerStop();
-            _foldingThePuzzlePuzzlesUI.GameOverUI.SetActiveFullImagePanel(true);
+            _foldingThePuzzlePuzzlesUI.GameOverUI.SetActive(true);
         }
 
         #endregion
@@ -112,7 +116,16 @@ namespace Infrastructure.ProjectStateMachine.States
         {
             _foldingThePuzzlePuzzlesUI.GameplayUI.CreatedParts(_partsAmount);
             _foldingThePuzzlePuzzlesUI.GameplayUI.RegisteringButtonsEvents(MovePart);
-            _foldingThePuzzlePuzzlesUI.GameplayUI.FillWithPartsOfCutsImages(_textures2D, _currentPositions);
+            
+            if (_textures2D != null)
+            {
+                _foldingThePuzzlePuzzlesUI.GameplayUI.FillWithPartsOfCutsImages(_textures2D, _currentPositions);
+            }
+            else
+            {
+                _foldingThePuzzlePuzzlesUI.GameplayUI.FillWithPartsOfCutsNumbers(_currentPositions);
+            }
+
             RemovePart(_emptyPosition);
         }
 
@@ -182,9 +195,13 @@ namespace Infrastructure.ProjectStateMachine.States
         private void Clear()
         {
             _piecesListTwoDimensional = null;
-            _foldingThePuzzlePuzzlesUI.ImageSampleUI.Clear();
-            _foldingThePuzzlePuzzlesUI.GameOverUI.Clear();
+
+            _foldingThePuzzlePuzzlesUI.GameOverUI.OnBackClicked -= ExitInMainMenu;
+
             _foldingThePuzzlePuzzlesUI.GameplayUI.Clear();
+
+            _foldingThePuzzlePuzzlesUI.MenuUI.OnBackClicked += ExitInMainMenu;
+            _foldingThePuzzlePuzzlesUI.MenuUI.OnResetClicked += ResetParts;
             _foldingThePuzzlePuzzlesUI.MenuUI.Clear();
         }
 
