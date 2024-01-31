@@ -1170,7 +1170,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7247733637884395026}
-  - component: {fileID: 1184077171948550548}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -1202,14 +1201,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1184077171948550548
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8719873026354135801}
-  m_CullTransparentMesh: 1
 --- !u!1 &9127628357895366178
 GameObject:
   m_ObjectHideFlags: 0
