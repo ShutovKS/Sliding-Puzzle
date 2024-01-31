@@ -39,6 +39,11 @@ namespace Infrastructure.ProjectStateMachine.States
         public async Task OnInitialize()
         {
             await CreatedUI();
+            
+            var puzzleInformations = GetPuzzlesInfo();
+            _puzzlesInformation = puzzleInformations.ToDictionary(info => info.Id, info => info);
+            _inGameMenuUI.PuzzlesScroll.CreatedPanel(_abstractFactory, puzzleInformations);
+            
             _inGameMenuUI.OnBackClicked += BackInMainMenu;
             _inGameMenuUI.PuzzlesScroll.OnPuzzleClicked += ClickGameImage;
             _inGameMenuUI.NumberParts.OnBackClicked += () => _inGameMenuUI.NumberParts.SetActive(false);
@@ -73,17 +78,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void OpenPuzzlesInfoUI()
         {
-            if (_puzzlesInformation != null)
-            {
-                _inGameMenuUI.PuzzlesScroll.OpenPanel();
-            }
-            else
-            {
-                var puzzleInformations = GetPuzzlesInfo();
-                _puzzlesInformation = puzzleInformations.ToDictionary(info => info.Id, info => info);
-                _inGameMenuUI.PuzzlesScroll.CreatedPanel(_abstractFactory, puzzleInformations);
-            }
-
+            _inGameMenuUI.PuzzlesScroll.OpenPanel();
             _inGameMenuUI.IsEnabled = true;
         }
 
