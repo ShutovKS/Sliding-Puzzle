@@ -8,11 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Bootstrap.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: 6848eb527ea2b744d8c2ece80ddcf254
-  - enabled: 1
-    path: Assets/Scenes/FoldingThePuzzle.unity
-    guid: 0aa04446d3118e9439c38c9b40d95dd7
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 2ee2c7062b4556b4aa6a39fcd0e29337, type: 2}
