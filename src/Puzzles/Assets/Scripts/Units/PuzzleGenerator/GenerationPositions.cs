@@ -10,7 +10,7 @@ namespace Units.PuzzleGenerator
 {
     public static class GenerationPositions
     {
-        private readonly static Random random = new();
+        private static readonly Random _random = new();
 
         public static Vector2Int[,] GetRandomPositions(int elementsAmount, Vector2Int emptyPosition)
         {
@@ -29,13 +29,13 @@ namespace Units.PuzzleGenerator
             for (var i = 0; i < countSort; i++)
             {
                 (int x, int y) newPosition = (0, 0);
-                if (random.Next(0, 2) == 1)
+                if (_random.Next(0, 2) == 1)
                 {
-                    newPosition.x = random.Next(0, 2) == 1 ? 1 : -1;
+                    newPosition.x = _random.Next(0, 2) == 1 ? 1 : -1;
                 }
                 else
                 {
-                    newPosition.y = random.Next(0, 2) == 1 ? 1 : -1;
+                    newPosition.y = _random.Next(0, 2) == 1 ? 1 : -1;
                 }
 
                 newPosition.x += oldPositions.x;
@@ -54,6 +54,22 @@ namespace Units.PuzzleGenerator
             }
 
             return positions;
+        }
+
+        public static bool IsMixedUp(Vector2Int[,] currentPositions)
+        {
+            for (var y = 0; y < currentPositions.GetLength(0); y++)
+            {
+                for (var x = 0; x < currentPositions.GetLength(1); x++)
+                {
+                    if (currentPositions[y, x].x != x || currentPositions[y, x].y != y)
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
         }
     }
 }

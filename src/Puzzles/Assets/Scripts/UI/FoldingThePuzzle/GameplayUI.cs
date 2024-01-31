@@ -139,13 +139,16 @@ namespace UI.FoldingThePuzzle
 
         public void Clear()
         {
-            foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary)
+            if (_vectorToButtonsInstanceDictionary != null)
             {
-                Object.Destroy(buttonInstance);
-            }
+                foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary)
+                {
+                    Object.Destroy(buttonInstance);
+                }
 
-            _buttonsInstanceToVectorDictionary.Clear();
-            _vectorToButtonsInstanceDictionary.Clear();
+                _buttonsInstanceToVectorDictionary.Clear();
+                _vectorToButtonsInstanceDictionary.Clear();
+            }
         }
     }
 }
