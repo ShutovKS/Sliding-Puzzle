@@ -30,7 +30,7 @@ namespace Services.Factories.UIFactory
         {
             { typeof(MainMenuUI), AssetsAddressablesConstants.MAIN_MENU_SCREEN },
             { typeof(InGameMenuUI), AssetsAddressablesConstants.IN_GAME_MENU_SCREEN },
-            { typeof(FoldingThePuzzlePuzzlesUI), AssetsAddressablesConstants.IN_GAME_MENU_SCREEN },
+            { typeof(FoldingThePuzzlePuzzlesUI), AssetsAddressablesConstants.FOLDING_THE_PUZZLE_SCREEN },
         };
 
         public T? GetUI<T>() where T : Object
