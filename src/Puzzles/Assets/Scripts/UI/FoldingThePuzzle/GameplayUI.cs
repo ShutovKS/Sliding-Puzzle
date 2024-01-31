@@ -15,13 +15,14 @@ namespace UI.FoldingThePuzzle
     public class GameplayUI
     {
         [SerializeField] private GameObject partsPanel;
+        [SerializeField] private GameObject panel;
 
         private Dictionary<GameObject, Vector2Int> _buttonsInstanceToVectorDictionary;
         private Dictionary<Vector2Int, GameObject> _vectorToButtonsInstanceDictionary;
 
         public void SetActive(bool value)
         {
-            partsPanel.SetActive(value);
+            panel.SetActive(value);
         }
 
         public void CreatedParts(int elementsAmount)
