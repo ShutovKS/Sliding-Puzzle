@@ -7,7 +7,6 @@ namespace Services.LoadPuzzlesCatalogData
     public interface ILoadPuzzlesCatalogData
     {
         void LoadData();
-        List<PuzzleInformation> GetPuzzlesInformations(string categoryId);
-        List<CategoryInformation> GetCategoriesInformations();
+        List<PuzzleInformation> GetPuzzlesInformation();
     }
 }

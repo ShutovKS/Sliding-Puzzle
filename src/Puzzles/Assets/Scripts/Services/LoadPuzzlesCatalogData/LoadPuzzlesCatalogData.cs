@@ -9,64 +9,30 @@ namespace Services.LoadPuzzlesCatalogData
 {
     public class LoadPuzzlesCatalogData : ILoadPuzzlesCatalogData
     {
-        private List<CategoryInformation> _categoriesInformations;
-        private Dictionary<string, List<PuzzleInformation>> _puzzleDictionary;
+        private readonly Dictionary<string, PuzzleInformation> _puzzleInformation = new();
 
         public LoadPuzzlesCatalogData()
         {
             LoadData();
         }
 
-        public async void LoadData()
+        public void LoadData()
         {
-            var path = Path.Combine(Application.streamingAssetsPath, "PuzzlesCatalogData.json");
-            var json = await File.ReadAllTextAsync(path);
+            var images = Resources.LoadAll<Texture2D>("Images");
 
-            var catalogData = JsonUtility.FromJson<PuzzlesCatalogData>(json);
-            _puzzleDictionary = new Dictionary<string, List<PuzzleInformation>>();
-
-            if (catalogData.categories == null) return;
-
-            _categoriesInformations = new List<CategoryInformation>();
-            for (var i = 0; i < catalogData.categories.Count; i++)
+            foreach (var image in images)
             {
-                var category = catalogData.categories[i];
-                var categoryInformation = new CategoryInformation(
-                    await LoadTexture2D(category.image_path),
-                    category.puzzles.Count,
-                    category.name,
-                    category.id);
-
-                _categoriesInformations.Add(categoryInformation);
-
-                var puzzleInformations = new List<PuzzleInformation>();
-                foreach (var puzzle in category.puzzles)
-                {
-                    var puzzleInformation = new PuzzleInformation(
-                        await LoadTexture2D(puzzle.image_path),
-                        puzzle.element_count,
-                        puzzle.name,
-                        puzzle.id);
-
-                    puzzleInformations.Add(puzzleInformation);
-                }
-
-                _puzzleDictionary.Add(category.id, puzzleInformations);
+                var puzzleInformation = new PuzzleInformation($"{image.GetInstanceID()}", image);
+                _puzzleInformation.Add(puzzleInformation.Id, puzzleInformation);
             }
+            
+            Debug.Log("LoadPuzzlesCatalogData: LoadData" + _puzzleInformation.Count);
         }
 
-        public List<PuzzleInformation> GetPuzzlesInformations(string categoryId)
+        public List<PuzzleInformation> GetPuzzlesInformation()
         {
-            return _puzzleDictionary.TryGetValue(categoryId, out var puzzleInformations)
-                ? puzzleInformations
-                : null;
+            return new List<PuzzleInformation>(_puzzleInformation.Values);
         }
-
-        public List<CategoryInformation> GetCategoriesInformations()
-        {
-            return _categoriesInformations;
-        }
-
 
         private async Task<Texture2D> LoadTexture2D(string imagePath)
         {
