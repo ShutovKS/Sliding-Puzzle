@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Data.PuzzleInformation;
+using Services.Factories.AbstractFactory;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -9,62 +13,28 @@ namespace UI.InGameMenu
     [Serializable]
     public class PuzzlesInfoScrollView
     {
-        public Action<int> OnPuzzleClicked;
+        public Action<string> OnPuzzleClicked;
 
-        [SerializeField] private ScrollRect scrollRect;
-        [SerializeField] private Transform contentParent;
-        [SerializeField] private GameObject contentPrefab;
+        [SerializeField] private Transform contentTransform;
         [SerializeField] private GameObject puzzlePrefab;
-
-        private readonly Dictionary<int, GameObject> _panels = new();
-        private GameObject _currentPanel;
-
-        public void OpenPanel(int id)
+        
+        public void OpenPanel()
         {
-            if (_currentPanel == null)
-            {
-                _currentPanel.SetActive(false);
-            }
-            
-            if (_panels.TryGetValue(id, out var panel))
-            {
-                panel.SetActive(true);
-                scrollRect.content = panel.GetComponent<RectTransform>();
-                _currentPanel = panel;
-            }
-            else
-            {
-                throw new Exception($"Панели с id {id} не существует.");
-            }
+            contentTransform.gameObject.SetActive(true);
+        }
+        
+        public void CloseOpenPanel()
+        {
+            contentTransform.gameObject.SetActive(false);
         }
 
-        public void AddPanels(int id, params (int id, Texture2D texture)[] puzzles)
+        public void CreatedPanel(IAbstractFactory abstractFactory, params PuzzleInformation[] puzzles)
         {
-            var panel = Object.Instantiate(contentPrefab, contentParent);
-            scrollRect.content = panel.GetComponent<RectTransform>();
-            _panels[id] = panel;
-            var panelTransform = panel.transform;
-
-            var instance = Object.Instantiate(puzzlePrefab, panelTransform);
-            instance.GetComponent<PuzzleInformationUI>().SetUp(() => OnPuzzleClicked?.Invoke(-1), text: $"{id}x{id}");
-
-            foreach (var (puzzleId, texture) in puzzles)
+            foreach (var puzzle in puzzles)
             {
-                instance = Object.Instantiate(puzzlePrefab, panelTransform);
-                instance.GetComponent<PuzzleInformationUI>().SetUp(() => OnPuzzleClicked?.Invoke(puzzleId), texture);
+                var instance = Object.Instantiate(puzzlePrefab, contentTransform);
+                instance.GetComponent<PuzzleInformationUI>().SetUp(() => OnPuzzleClicked?.Invoke(puzzle.Id), puzzle.Texture2D);
             }
-
-            OpenPanel(id);
-        }
-
-        public void Clear()
-        {
-            foreach (var panel in _panels.Values)
-            {
-                Object.Destroy(panel);
-            }
-
-            _panels.Clear();
         }
     }
 }

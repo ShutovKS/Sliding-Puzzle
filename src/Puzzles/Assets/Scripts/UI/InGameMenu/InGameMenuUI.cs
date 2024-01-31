@@ -13,25 +13,20 @@ namespace UI.InGameMenu
 {
     public class InGameMenuUI : MonoBehaviour
     {
+        public Action OnBackClicked;
         [field: SerializeField] public PuzzlesInfoScrollView PuzzlesScroll { get; private set; }
         [SerializeField] private Button backButton;
         [SerializeField] private Canvas canvas;
+
+        private void Awake()
+        {
+            backButton.onClick.AddListener(() => OnBackClicked?.Invoke());
+        }
 
         public bool IsEnabled
         {
             get => canvas.enabled;
             set => canvas.enabled = value;
-        }
-
-        public void Clear()
-        {
-            backButton.onClick.RemoveAllListeners();
-            PuzzlesScroll.Clear();
-        }
-
-        public void RegisterBackButtonListener(UnityAction listener)
-        {
-            backButton.onClick.AddListener(listener);
         }
     }
 }

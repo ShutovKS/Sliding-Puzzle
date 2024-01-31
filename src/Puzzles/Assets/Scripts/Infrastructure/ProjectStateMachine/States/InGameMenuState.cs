@@ -1,23 +1,20 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Data.AssetsAddressablesConstants;
 using Data.PuzzleInformation;
 using Infrastructure.ProjectStateMachine.Core;
 using Services.Factories.AbstractFactory;
 using Services.Factories.UIFactory;
 using Services.LoadPuzzlesCatalogData;
 using UI.InGameMenu;
-using UnityEngine;
-using UnityEngine.Events;
 
 #endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
-    public class InGameMenuState : IState<Bootstrap>, IEnter, IExit
+    public class InGameMenuState : IState<Bootstrap>, IEnter<int>, IExit, IInitialize
     {
         public InGameMenuState(Bootstrap initializer, IUIFactory uiFactory, IAbstractFactory abstractFactory,
             ILoadPuzzlesCatalogData loadPuzzlesCatalogData)
@@ -33,130 +30,79 @@ namespace Infrastructure.ProjectStateMachine.States
         private readonly IAbstractFactory _abstractFactory;
         private readonly ILoadPuzzlesCatalogData _loadPuzzlesCatalogData;
 
+        private Dictionary<string, PuzzleInformation> _puzzlesInformation;
         private InGameMenuUI _inGameMenuUI;
 
-        public async void OnEnter()
+        public async Task OnInitialize()
         {
             await CreatedUI();
-            await CreatedCategoryInfoUI();
-            await CreatedPuzzlesInfoUI();
-            OpenPanelCategoryInfo();
+            _inGameMenuUI.OnBackClicked += BackInMainMenu;
+            _inGameMenuUI.PuzzlesScroll.OnPuzzleClicked += StartGameImage;
+        }
+
+        public void OnEnter(int number)
+        {
+            if (number != 0)
+            {
+                StartGameNumber(number);
+            }
+            else
+            {
+                OpenPuzzlesInfoUI();
+            }
         }
 
         public void OnExit()
         {
-            Clear();
-            DestroyUI();
+            ClosePuzzlesInfoUI();
+            _inGameMenuUI.IsEnabled = false;
         }
 
         private async Task CreatedUI()
         {
-            if (_uiFactory.InGameMenuScreen == null)
+            _inGameMenuUI = await _uiFactory.Created<InGameMenuUI>();
+        }
+
+        private void OpenPuzzlesInfoUI()
+        {
+            if (_puzzlesInformation != null)
             {
-                var inGameMenuScreen = await _uiFactory.CreatedInGameMenuScreen();
-                _inGameMenuUI = inGameMenuScreen.GetComponent<InGameMenuUI>();
+                _inGameMenuUI.PuzzlesScroll.OpenPanel();
             }
             else
             {
-                _uiFactory.InGameMenuScreen.SetActive(true);
-                _inGameMenuUI = _uiFactory.InGameMenuScreen.GetComponent<InGameMenuUI>();
-            }
-        }
-
-        private void DestroyUI()
-        {
-            _uiFactory.InGameMenuScreen.SetActive(false);
-        }
-
-        private void Clear()
-        {
-            _inGameMenuUI.Clear();
-        }
-
-        private async Task CreatedCategoryInfoUI()
-        {
-            var categoryInformation = GetCategoryInfo();
-
-            var rectTransforms = new RectTransform[categoryInformation.Count];
-
-            foreach (var category in categoryInformation)
-            {
-                var categoryInformationUI = await _abstractFactory.CreateInstance<GameObject>(
-                    AssetsAddressablesConstants.CATEGORY_INFORMATION_SCREEN);
-
-                if (!categoryInformationUI.TryGetComponent(out CategoryInformationUI categoryInformationUIComponent))
-                    throw new Exception("CategoryInformationUI not found");
-
-                categoryInformationUIComponent.SetUp(
-                    category.Image,
-                    category.Name,
-                    () => OpenPanelPuzzleInfo(category.Id));
-
-                rectTransforms[categoryInformation.IndexOf(category)] =
-                    categoryInformationUI.GetComponent<RectTransform>();
+                var puzzleInformations = GetPuzzlesInfo();
+                _puzzlesInformation = puzzleInformations.ToDictionary(info => info.Id, info => info);
+                _inGameMenuUI.PuzzlesScroll.CreatedPanel(_abstractFactory, puzzleInformations);
             }
 
-            _inGameMenuUI.AddCategoriesPanel(rectTransforms);
+            _inGameMenuUI.IsEnabled = true;
         }
 
-        private async Task CreatedPuzzlesInfoUI()
+        private void ClosePuzzlesInfoUI()
         {
-            var categoryInformation = GetCategoryInfo();
-
-            foreach (var category in categoryInformation)
-            {
-                var puzzlesInformation = GetPuzzlesInfo(category.Id);
-
-                var rectTransforms = new RectTransform[puzzlesInformation.Count];
-
-                foreach (var puzzle in puzzlesInformation)
-                {
-                    var puzzleInformationUI = await _abstractFactory.CreateInstance<GameObject>(
-                        AssetsAddressablesConstants.PUZZLE_INFORMATION_SCREEN);
-
-                    if (!puzzleInformationUI.TryGetComponent(out PuzzleInformationUI puzzleInformationUIComponent))
-                        throw new Exception("PuzzleInformationUI not found");
-
-                    puzzleInformationUIComponent.SetUp(
-                        puzzle.Image,
-                        puzzle.Name,
-                        puzzle.ElementsCount,
-                        () => StartPuzzle(puzzle));
-
-                    rectTransforms[puzzlesInformation.IndexOf(puzzle)] =
-                        puzzleInformationUI.GetComponent<RectTransform>();
-                }
-
-                _inGameMenuUI.AddPuzzlesPanel(rectTransforms, category.Id);
-            }
+            _inGameMenuUI.PuzzlesScroll.CloseOpenPanel();
         }
 
-        private void OpenPanelCategoryInfo()
+        private PuzzleInformation[] GetPuzzlesInfo()
         {
-            _inGameMenuUI.OpenCategoriesPanel();
-            _inGameMenuUI.ClearBackButtonListener();
-            _inGameMenuUI.RegisterBackButtonListener(BackInMainMenu);
+            var puzzlesInformation = _loadPuzzlesCatalogData.GetPuzzlesInformation();
+
+            return puzzlesInformation.ToArray();
         }
 
-        private void OpenPanelPuzzleInfo(string panelName)
+        private void StartGameImage(string key)
         {
-            _inGameMenuUI.OpenPuzzleInfoPanel(panelName);
-            _inGameMenuUI.ClearBackButtonListener();
-            _inGameMenuUI.RegisterBackButtonListener(OpenPanelCategoryInfo);
+            var puzzleInformation = _puzzlesInformation[key];
+            puzzleInformation.ElementsCount = 2;
+
+            Initializer.StateMachine.SwitchState<FoldingThePuzzleState, PuzzleInformation>(puzzleInformation);
         }
 
-        private List<CategoryInformation> GetCategoryInfo()
+        private void StartGameNumber(int number)
         {
-            return _loadPuzzlesCatalogData.GetCategoriesInformations();
-        }
-
-        private List<PuzzleInformation> GetPuzzlesInfo(string categoryId)
-        {
-            return _loadPuzzlesCatalogData.GetPuzzlesInformations(categoryId);
-        }
-
-        private void StartPuzzle(PuzzleInformation puzzleInformation)
-        {
+            var puzzleInformation = new PuzzleInformation(null, null, number);
+            
             Initializer.StateMachine.SwitchState<FoldingThePuzzleState, PuzzleInformation>(puzzleInformation);
         }
 
