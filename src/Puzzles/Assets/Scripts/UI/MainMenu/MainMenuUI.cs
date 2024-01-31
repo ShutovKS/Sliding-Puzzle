@@ -12,24 +12,22 @@ namespace UI.MainMenu
 {
     public class MainMenuUI : MonoBehaviour
     {
-        [Header("Properties")] 
-        public Action<int> OnLevelClicked;
+        [Header("Properties")] public Action<int> OnLevelClicked;
         public Action OnInstructionsClicked;
         public Action OnExitClicked;
+
         public bool IsEnabled
         {
             get => canvas.enabled;
             set => canvas.enabled = value;
         }
 
-        [Header("UI")] 
-        [field: SerializeField] public Instructions instructions;
+        [Header("UI")] [field: SerializeField] public Instructions instructions;
         [SerializeField] private Canvas canvas;
         [SerializeField] private Button instructionsButton;
         [SerializeField] private Button exitButton;
 
-        [Header("Levels")] 
-        [SerializeField] private GameObject levelPrefab;
+        [Header("Levels")] [SerializeField] private GameObject levelPrefab;
         [SerializeField] private Transform levelsContent;
         [SerializeField, Range(1, 9)] private int levelCount = 8;
         [SerializeField] private int startRangeLevel = 2;
@@ -43,18 +41,22 @@ namespace UI.MainMenu
             instructionsButton.onClick.AddListener(() => OnInstructionsClicked?.Invoke());
             exitButton.onClick.AddListener(() => OnExitClicked?.Invoke());
 
+#if UNITY_WEBGL	
+            exitButton.enabled = false;
+#endif
+            
             for (var number = startRangeLevel; number < startRangeLevel + levelCount; number++)
             {
                 var numberLevel = number;
                 CreatedLevelButton(index, $"{number}x{number}", () => OnLevelClicked?.Invoke(numberLevel));
                 index++;
             }
-            
+
             CreatedLevelButton(index, "Image", () => OnLevelClicked?.Invoke(0));
-            
+
             instructions.Initialize();
         }
-        
+
         private void CreatedLevelButton(int index, string name, Action OnClicked)
         {
             var line = index / COLUMN_COUNT;
@@ -84,15 +86,15 @@ namespace UI.MainMenu
     public class Instructions
     {
         public Action OnCloseClicked;
-        
-        [SerializeField] private GameObject panel; 
+
+        [SerializeField] private GameObject panel;
         [SerializeField] private Button closeButton;
-        
+
         public void Initialize()
         {
             closeButton.onClick.AddListener(() => OnCloseClicked?.Invoke());
         }
-        
+
         public void SetActive(bool isActive)
         {
             panel.SetActive(isActive);
