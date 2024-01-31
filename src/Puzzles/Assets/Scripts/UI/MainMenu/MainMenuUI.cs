@@ -42,7 +42,7 @@ namespace UI.MainMenu
             exitButton.onClick.AddListener(() => OnExitClicked?.Invoke());
 
 #if UNITY_WEBGL	
-            exitButton.enabled = false;
+            exitButton.gameObject.SetActive(false);
 #endif
             
             for (var number = startRangeLevel; number < startRangeLevel + levelCount; number++)
