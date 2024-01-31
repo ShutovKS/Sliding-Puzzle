@@ -44,31 +44,36 @@ namespace UI.MainMenu
 
             for (var number = startRangeLevel; number < startRangeLevel + levelCount; number++)
             {
-                var line = index / COLUMN_COUNT;
-                var column = index - line * COLUMN_COUNT;
-                var width = INDENTATION_LEVEL_BUTTON * (1 + column) + SIZE_LEVEL_BUTTON * column;
-                var height = 1f - (INDENTATION_LEVEL_BUTTON * (1 + line) + SIZE_LEVEL_BUTTON * line);
-                var name = $"{startRangeLevel + index}x{startRangeLevel + index}";
-
-                var levelButton = Instantiate(levelPrefab, levelsContent);
-                levelButton.SetActive(true);
-                levelButton.name = name;
-
-                var rectTransform = levelButton.GetComponent<RectTransform>();
-                rectTransform.anchorMin = new Vector2(width, height - SIZE_LEVEL_BUTTON);
-                rectTransform.anchorMax = new Vector2(width + SIZE_LEVEL_BUTTON, height);
-                rectTransform.offsetMin = Vector2.zero;
-                rectTransform.offsetMax = Vector2.zero;
-
-                var textMeshProUGUI = levelButton.GetComponentInChildren<TextMeshProUGUI>();
-                textMeshProUGUI.text = name;
-
-                var button = levelButton.GetComponent<Button>();
-                var numberForAction = number;
-                button.onClick.AddListener(() => OnLevelClicked?.Invoke(numberForAction));
-
+                var numberLevel = number;
+                CreatedLevelButton(index, $"{number}x{number}", () => OnLevelClicked?.Invoke(numberLevel));
                 index++;
             }
+            
+            CreatedLevelButton(index, "Image", () => OnLevelClicked?.Invoke(0));
+        }
+        
+        private void CreatedLevelButton(int index, string name, Action OnClicked)
+        {
+            var line = index / COLUMN_COUNT;
+            var column = index - line * COLUMN_COUNT;
+            var width = INDENTATION_LEVEL_BUTTON * (1 + column) + SIZE_LEVEL_BUTTON * column;
+            var height = 1f - (INDENTATION_LEVEL_BUTTON * (1 + line) + SIZE_LEVEL_BUTTON * line);
+
+            var levelButton = Instantiate(levelPrefab, levelsContent);
+            levelButton.SetActive(true);
+            levelButton.name = name;
+
+            var rectTransform = levelButton.GetComponent<RectTransform>();
+            rectTransform.anchorMin = new Vector2(width, height - SIZE_LEVEL_BUTTON);
+            rectTransform.anchorMax = new Vector2(width + SIZE_LEVEL_BUTTON, height);
+            rectTransform.offsetMin = Vector2.zero;
+            rectTransform.offsetMax = Vector2.zero;
+
+            var textMeshProUGUI = levelButton.GetComponentInChildren<TextMeshProUGUI>();
+            textMeshProUGUI.text = name;
+
+            var button = levelButton.GetComponent<Button>();
+            button.onClick.AddListener(() => OnClicked?.Invoke());
         }
     }
 }
