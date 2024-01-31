@@ -1,18 +1,44 @@
+### Unity .gitignore template
+
+# This .gitignore file should be placed at the root of your Unity project directory
+
+# Unity-specific
 /[Ll]ibrary/
-/Library/
 /[Tt]emp/
 /[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /[Tt]rash/
-/[Bb]uild/
 /[Kk]eys/
 /[Tt]rash
-/Logs/
 
-#new
+# Build artifacts
+/[Bb]uild/
+/[Bb]uilds/
+/[Bb]uild-[Ww]in/
+/[Bb]uild [Ww]in/
+/[Bb]uild-[Ww]indows/
+/[Bb]uild [Ww]indows/
+/[Bb]uild-[Aa]ndroid/
+/[Bb]uild [Aa]ndroid/
+/[Bb]uild-[Pp]lay-[Mm]arket/
+/[Bb]uild [Pp]lay [Mm]arket/
+/[Bb]uild-[Ii]os/
+/[Bb]uild [Ii]os/
+/[Bb]uild-[Mm]ac/
+/[Bb]uild [Mm]ac/
+/[Bb]uild-[Ll]inux/
+/[Bb]uild [Ll]inux/
+/[Bb]uild-[Ww]ebGL/
+/[Bb]uild [Ww]ebGL/
+/[Bb]uild-[Ww]eb/
+/[Bb]uild [Ww]eb/
+/[Bb]uild-[Uu][Ww][Pp]/
+/[Bb]uild [Uu][Ww][Pp]/
+/[Bb]uild-[Uu]niversal/
+/[Bb]uild [Uu]niversal/
+
+# Generated files new
 */Library/
 */[Ll]ibrary/
 */[Tt]emp/
@@ -25,32 +51,13 @@
 */Logs/
 */.vs/
 *ExportedObj/
-.consulo/
-*.csproj
-*.unityproj
-*.sln
-*.suo
-*.tmp
-*.user
-*.userprefs
-*.pidb
-*.booproj
-*.svd
-*.pdb
-*.mdb
-*.opendb
-*.VC.db
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
 */sysinfo.txt
-*.apk
-*.unitypackage
-crashlytics-build.properties
-
 *.vsconfig
-.vsconfig
-#end new
+
+# Archives and packages
+*.rar
+*.zip
+*.7z
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -67,6 +74,7 @@ crashlytics-build.properties
 
 # Visual Studio cache directory
 .vs/
+.vsconfig
 
 # Gradle cache directory
 .gradle/
@@ -87,7 +95,6 @@ ExportedObj/
 *.pdb
 *.mdb
 *.opendb
-*.log
 *.VC.db
 
 # Unity3D generated meta files
@@ -98,24 +105,21 @@ ExportedObj/
 # Unity3D generated file on crash reports
 sysinfo.txt
 
-# Builds
+# Build outputs
 *.apk
 *.aab
 *.unitypackage
 *.app
 
-# Crashlytics generated file
+# Crashlytics
 crashlytics-build.properties
 
-# Packed Addressables
+# Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
-# Temporary auto-generated Android Assets
+# Auto-generated Android assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-
-#Auto
-/UnityLockfile
 
 #Visual Studio files
 *.[Oo]bj 
@@ -146,9 +150,6 @@ obj/
 [Rr]elease/ 
 Ankh.NoLoad
 
-#Rider
-.idea/
-
 #Tooling
 _ReSharper*/
 .resharper
@@ -159,3 +160,16 @@ _ReSharper*/
 
 #Subversion files
 .svn 
+
+#MacOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+#Visual Studio Code settings
+.vscode/
+
+#Text-based files
+#*.txt
+#*.md
+#*.html
