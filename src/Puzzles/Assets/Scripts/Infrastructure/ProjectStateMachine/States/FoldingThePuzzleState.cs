@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Data.PuzzleInformation;
 using Infrastructure.ProjectStateMachine.Core;
@@ -9,9 +8,9 @@ using UI.FoldingThePuzzle;
 using Units.Image;
 using Units.Piece;
 using Units.PuzzleGenerator;
+using Units.Time;
 using UnityEngine;
 using UnityEngine.Events;
-using Debug = UnityEngine.Debug;
 
 #endregion
 
@@ -54,8 +53,7 @@ namespace Infrastructure.ProjectStateMachine.States
 
             if (puzzleInformation.Texture2D != null)
             {
-                _textures2D =
-                    ImageCutter.CutImage(_texture2D, ImageCutterType.NumberOfParts, _partsAmount, _partsAmount);
+                _textures2D = ImageCutter.CutImage(_texture2D, ImageCutterType.NumberOfParts, _partsAmount, _partsAmount);
             }
 
             _emptyPosition = new Vector2Int(_partsAmount - 1, 0);
@@ -125,7 +123,7 @@ namespace Infrastructure.ProjectStateMachine.States
             RemoveAllParts();
             InitialisePiecesListTwoDimensional();
             CreatedParts();
-            _timerWatch.Restart();
+            _timerWatch.Reset();
         }
 
         private void MovePart(Vector2Int currentPosition)
@@ -173,8 +171,6 @@ namespace Infrastructure.ProjectStateMachine.States
 
                 var targetPosition = new Vector2Int(x, y);
                 var piece = new Piece(targetPosition, currentPosition);
-                Debug.Log(
-                    $"TargetPosition: {targetPosition.x}/{targetPosition.y}, CurrentPosition: {currentPosition.x}/{currentPosition.y}");
                 _piecesListTwoDimensional.AddPiece(piece);
             }
 
@@ -196,8 +192,6 @@ namespace Infrastructure.ProjectStateMachine.States
 
         private void OnAllPartsInPlace()
         {
-            Debug.Log("Win");
-
             _foldingThePuzzlePuzzlesUI.GameplayUI.SetActive(false);
             _foldingThePuzzlePuzzlesUI.GameOverUI.SetActive(true);
         }
@@ -231,7 +225,7 @@ namespace Infrastructure.ProjectStateMachine.States
         {
             while (_isStopTimer == false)
             {
-                _onTimerUpdate?.Invoke(_timerWatch.Elapsed.ToString(@"mm\:ss"));
+                _onTimerUpdate?.Invoke(_timerWatch.GetElapsedTime().ToString(@"mm\:ss"));
                 await Task.Delay(1000);
             }
         }
