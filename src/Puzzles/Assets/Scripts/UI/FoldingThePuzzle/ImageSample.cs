@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace UI.FoldingThePuzzle
 {
     [Serializable]
-    public class ImageSampleUI
+    public class ImageSample
     {
         [SerializeField] private Image image;
 

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace UI.FoldingThePuzzle
 {
     [Serializable]
-    public class MenuUI
+    public class Menu
     {
         public Action OnBackClicked;
         public Action OnResetClicked;
