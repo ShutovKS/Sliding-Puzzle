@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Data.Path;
 using Data.PuzzleInformation;
 using UnityEngine;
@@ -38,7 +37,7 @@ namespace Services.LoadPuzzlesCatalogData
         private Texture2D LoadTexture2D(string imagePath)
         {
             var texture2D = Resources.Load<Texture2D>(imagePath);
-            
+
             return texture2D;
         }
     }

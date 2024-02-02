@@ -18,7 +18,7 @@ namespace UI.InGameMenu
         public void SetUp(UnityAction listener, Texture2D texture = null, string text = "")
         {
             puzzleButton.onClick.AddListener(listener);
-         
+
             if (texture != null)
             {
                 image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);

@@ -1,5 +1,8 @@
-using System;
+#region
+
 using UnityEngine;
+
+#endregion
 
 namespace UI.FoldingThePuzzle
 {

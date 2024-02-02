@@ -2,31 +2,29 @@
 
 using Infrastructure.ProjectStateMachine.Core;
 using Infrastructure.ProjectStateMachine.States;
-using JetBrains.Annotations;
-using Services.AssetsAddressablesProvider;
-using Services.Factories.AbstractFactory;
 using Services.Factories.UIFactory;
 using Services.LoadPuzzlesCatalogData;
+using UnityEngine;
 
 #endregion
 
 namespace Infrastructure.ProjectStateMachine
 {
-    [UsedImplicitly]
-    public class Bootstrap
+    public class Bootstrap : MonoBehaviour
     {
-        public Bootstrap(
-            IUIFactory uiFactory,
-            IAbstractFactory abstractFactory,
-            IAssetsAddressablesProvider assetsAddressablesProvide,
-            ILoadPuzzlesCatalogData loadPuzzlesCatalogData)
+        public Bootstrap()
         {
+            IUIFactory uiFactory = new UIFactory();
+            ILoadPuzzlesCatalogData loadPuzzlesCatalogData = new LoadPuzzlesCatalogData();
+
             StateMachine = new StateMachine<Bootstrap>(
                 new BootstrapState(this),
                 new MainMenuState(this, uiFactory),
-                new InGameMenuState(this, uiFactory, abstractFactory, loadPuzzlesCatalogData),
+                new InGameMenuState(this, uiFactory, loadPuzzlesCatalogData),
                 new FoldingThePuzzleState(this, uiFactory)
             );
+
+            StateMachine.SwitchState<BootstrapState>();
         }
 
         public readonly StateMachine<Bootstrap> StateMachine;

@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,8 @@ namespace Infrastructure.ProjectStateMachine.States
 {
     public class InGameMenuState : IState<Bootstrap>, IEnter<int>, IExit, IInitialize
     {
-        public InGameMenuState(Bootstrap initializer, IUIFactory uiFactory, ILoadPuzzlesCatalogData loadPuzzlesCatalogData)
+        public InGameMenuState(Bootstrap initializer, IUIFactory uiFactory,
+            ILoadPuzzlesCatalogData loadPuzzlesCatalogData)
         {
             Initializer = initializer;
             _uiFactory = uiFactory;
@@ -35,11 +36,11 @@ namespace Infrastructure.ProjectStateMachine.States
         public async Task OnInitialize()
         {
             await CreatedUI();
-            
+
             var puzzleInformations = GetPuzzlesInfo();
             _puzzlesInformation = puzzleInformations.ToDictionary(info => info.Id, info => info);
             _inGameMenuUI.PuzzlesScroll.CreatedPanel(puzzleInformations);
-            
+
             _inGameMenuUI.OnBackClicked += BackInMainMenu;
             _inGameMenuUI.PuzzlesScroll.OnPuzzleClicked += ClickGameImage;
             _inGameMenuUI.NumberParts.OnBackClicked += () => _inGameMenuUI.NumberParts.SetActive(false);

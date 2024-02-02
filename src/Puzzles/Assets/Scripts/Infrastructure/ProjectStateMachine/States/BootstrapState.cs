@@ -1,13 +1,12 @@
 ﻿#region
 
 using Infrastructure.ProjectStateMachine.Core;
-using Zenject;
 
 #endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
-    public class BootstrapState : IState<Bootstrap>, IInitializable
+    public class BootstrapState : IState<Bootstrap>
     {
         public BootstrapState(Bootstrap initializer)
         {

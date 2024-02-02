@@ -72,7 +72,7 @@ namespace Services.Factories.UIFactory
             var type = typeof(T);
 
             var prefab = Resources.Load<GameObject>(_address[type]);
-            
+
             var instance = Object.Instantiate(prefab);
 
             Object.DontDestroyOnLoad(instance);

@@ -2,7 +2,6 @@
 
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 #endregion
@@ -13,11 +12,11 @@ namespace UI.FoldingThePuzzle
     public class GameOverUI
     {
         public Action OnBackClicked;
-        
+
         [SerializeField] private Image image;
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject panel;
-        
+
         public void Initialize()
         {
             exitButton.onClick.AddListener(() => OnBackClicked?.Invoke());

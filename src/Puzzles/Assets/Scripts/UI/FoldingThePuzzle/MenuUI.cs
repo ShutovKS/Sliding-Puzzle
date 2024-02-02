@@ -3,7 +3,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 #endregion
@@ -19,7 +18,7 @@ namespace UI.FoldingThePuzzle
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private Button resetButton;
         [SerializeField] private Button exitButton;
-        
+
         public void Initialize()
         {
             resetButton.onClick.AddListener(() => OnResetClicked?.Invoke());
