@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿#region
+
+using System.Collections.Generic;
 using Data.PuzzleInformation;
+
+#endregion
 
 namespace Services.LoadPuzzlesCatalogData
 {

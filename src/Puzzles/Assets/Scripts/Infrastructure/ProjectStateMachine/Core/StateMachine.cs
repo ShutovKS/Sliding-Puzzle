@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
 
 #endregion
 
@@ -17,7 +16,8 @@ namespace Infrastructure.ProjectStateMachine.Core
             _states = new Dictionary<Type, IState<TInitializer>>(states.Length);
 
             _states = states.ToDictionary(state => state.GetType(), state => state);
-            _statesIsInitialise = states.Where(state => state.Initializer != null).ToDictionary(state => state.GetType(), _ => false);
+            _statesIsInitialise = states.Where(state => state.Initializer != null)
+                .ToDictionary(state => state.GetType(), _ => false);
         }
 
         private readonly Dictionary<Type, IState<TInitializer>> _states;

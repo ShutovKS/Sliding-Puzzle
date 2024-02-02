@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿#region
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Data.Path;
 using Data.PuzzleInformation;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+
+#endregion
 
 namespace Services.LoadPuzzlesCatalogData
 {
@@ -18,7 +21,7 @@ namespace Services.LoadPuzzlesCatalogData
 
         public void LoadData()
         {
-            var images = Resources.LoadAll<Texture2D>("Images");
+            var images = Resources.LoadAll<Texture2D>(ResourcesPathsConstants.ALL_IMAGES);
 
             foreach (var image in images)
             {
@@ -32,14 +35,11 @@ namespace Services.LoadPuzzlesCatalogData
             return new List<PuzzleInformation>(_puzzleInformation.Values);
         }
 
-        private async Task<Texture2D> LoadTexture2D(string imagePath)
+        private Texture2D LoadTexture2D(string imagePath)
         {
-            var handle = Addressables.LoadAssetAsync<Texture2D>(imagePath);
-            await handle.Task;
-
-            var image = handle.Result;
-
-            return image;
+            var texture2D = Resources.Load<Texture2D>(imagePath);
+            
+            return texture2D;
         }
     }
 }

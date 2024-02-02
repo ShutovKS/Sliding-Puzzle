@@ -1,7 +1,5 @@
 ﻿#region
 
-using Services.AssetsAddressablesProvider;
-using Services.Factories.AbstractFactory;
 using Services.Factories.UIFactory;
 using Services.LoadPuzzlesCatalogData;
 using Zenject;
@@ -15,8 +13,6 @@ namespace Infrastructure.Installers
         public override void InstallBindings()
         {
             BindUIFactory();
-            BindAbstractFactory();
-            BindAssetsAddressablesProvider();
             BindLoadPuzzlesCatalogData();
         }
 
@@ -25,16 +21,6 @@ namespace Infrastructure.Installers
             Container.BindInterfacesTo<UIFactory>().AsSingle().NonLazy();
         }
 
-        private void BindAbstractFactory()
-        {
-            Container.BindInterfacesTo<AbstractFactory>().AsSingle().NonLazy();
-        }
-
-        private void BindAssetsAddressablesProvider()
-        {
-            Container.BindInterfacesTo<AssetsAddressablesProvider>().AsSingle().NonLazy();
-        }
-        
         private void BindLoadPuzzlesCatalogData()
         {
             Container.BindInterfacesTo<LoadPuzzlesCatalogData>().AsSingle().NonLazy();

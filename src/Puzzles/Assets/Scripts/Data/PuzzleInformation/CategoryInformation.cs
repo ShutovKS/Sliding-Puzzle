@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
+
+#endregion
 
 namespace Data.PuzzleInformation
 {
@@ -8,7 +12,7 @@ namespace Data.PuzzleInformation
         public readonly int PuzzleCount;
         public readonly string Name;
         public readonly string Id;
-        
+
         public CategoryInformation(Texture2D image, int puzzleCount, string name, string id)
         {
             Image = image;
