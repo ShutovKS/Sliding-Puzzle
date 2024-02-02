@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace UI.FoldingThePuzzle
 {
     [Serializable]
-    public class GameOverUI
+    public class GameOver
     {
         public Action OnBackClicked;
 

@@ -8,17 +8,17 @@ namespace UI.FoldingThePuzzle
 {
     public class FoldingThePuzzlePuzzlesUI : MonoBehaviour
     {
-        [field: SerializeField] public GameOverUI GameOverUI { get; private set; }
-        [field: SerializeField] public ImageSampleUI ImageSampleUI { get; private set; }
-        [field: SerializeField] public MenuUI MenuUI { get; private set; }
-        [field: SerializeField] public GameplayUI GameplayUI { get; private set; }
+        [field: SerializeField] public GameOver GameOver { get; private set; }
+        [field: SerializeField] public ImageSample ImageSample { get; private set; }
+        [field: SerializeField] public Menu Menu { get; private set; }
+        [field: SerializeField] public Gameplay Gameplay { get; private set; }
 
         [SerializeField] private Canvas canvas;
 
         public void Awake()
         {
-            GameOverUI.Initialize();
-            MenuUI.Initialize();
+            GameOver.Initialize();
+            Menu.Initialize();
         }
 
         public bool IsEnabled

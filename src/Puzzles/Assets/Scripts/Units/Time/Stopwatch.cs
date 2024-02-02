@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Units.Time
 {
@@ -13,7 +14,7 @@ namespace Units.Time
         {
             if (IsRunning)
             {
-                throw new InvalidOperationException("Stopwatch is already running.");
+                Stop();
             }
 
             _startTime = DateTime.UtcNow;
@@ -24,7 +25,7 @@ namespace Units.Time
         {
             if (!IsRunning)
             {
-                throw new InvalidOperationException("Stopwatch is not running.");
+                return;
             }
 
             _elapsed += DateTime.UtcNow - _startTime;

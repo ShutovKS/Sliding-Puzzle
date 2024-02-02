@@ -103,6 +103,7 @@ namespace Units.Piece
             if (_grid[y, x] == null)
             {
                 Debug.LogWarning($"Деталь не найдена {x}/{y}");
+                return;
             }
 
             _partsOutOfPlace.Remove(_grid[y, x]);
