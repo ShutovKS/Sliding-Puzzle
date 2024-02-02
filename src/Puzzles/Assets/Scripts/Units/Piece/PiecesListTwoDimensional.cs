@@ -28,13 +28,15 @@ namespace Units.Piece
             }
         }
 
+        public UnityAction OnAllPartsInPlace;
+        public bool IsAllPartsInPlace => _partsOutOfPlace.Count == 0;
+
         private readonly Piece[,] _grid;
 
         private readonly int _height;
         private readonly List<Piece> _partsOutOfPlace;
         private readonly int _width;
 
-        public UnityAction OnAllPartsInPlace;
 
         public bool TryMovePiece(Vector2Int currentPosition, out Vector2Int newPosition)
         {
@@ -50,7 +52,7 @@ namespace Units.Piece
                 for (var tempX = x - 1; tempX <= x + 1; tempX++)
                 {
                     if (tempX < 0 || tempX >= _width || tempY < 0 || tempY >= _height ||
-                        tempX != x && tempY != y || tempX == x && tempY == y ||
+                        (tempX != x && tempY != y) || (tempX == x && tempY == y) ||
                         _grid[tempY, tempX] != null)
                     {
                         continue;
@@ -112,19 +114,15 @@ namespace Units.Piece
             if (piece.CurrentPosition == piece.TargetPosition)
             {
                 _partsOutOfPlace.Remove(piece);
-                CheckAllPartsInPlace();
+
+                if (IsAllPartsInPlace)
+                {
+                    OnAllPartsInPlace?.Invoke();
+                }
             }
             else if (_partsOutOfPlace.Contains(piece) == false)
             {
                 _partsOutOfPlace.Add(piece);
-            }
-        }
-
-        private void CheckAllPartsInPlace()
-        {
-            if (_partsOutOfPlace.Count == 0)
-            {
-                OnAllPartsInPlace?.Invoke();
             }
         }
     }

@@ -53,7 +53,7 @@
 *ExportedObj/
 */sysinfo.txt
 *.vsconfig
-
+.utmp/
 # Archives and packages
 *.rar
 *.zip

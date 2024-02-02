@@ -68,7 +68,10 @@ namespace UI.FoldingThePuzzle
 
         public void RemovePart(Vector2Int position)
         {
-            if (!_vectorToButtonsInstanceDictionary.TryGetValue(position, out var partInstance)) return;
+            if (!_vectorToButtonsInstanceDictionary.TryGetValue(position, out var partInstance))
+            {
+                return;
+            }
 
             Object.Destroy(partInstance);
             _vectorToButtonsInstanceDictionary.Remove(position);

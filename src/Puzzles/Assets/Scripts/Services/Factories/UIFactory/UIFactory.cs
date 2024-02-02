@@ -4,8 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Data.AssetsAddressablesConstants;
-using Services.AssetsAddressablesProvider;
+using Data.Path;
 using UI.FoldingThePuzzle;
 using UI.InGameMenu;
 using UI.MainMenu;
@@ -18,19 +17,13 @@ namespace Services.Factories.UIFactory
 {
     public class UIFactory : IUIFactory
     {
-        public UIFactory(IAssetsAddressablesProvider assetsAddressableService)
-        {
-            _assetsAddressableService = assetsAddressableService;
-        }
-
-        private readonly IAssetsAddressablesProvider _assetsAddressableService;
         private readonly Dictionary<Type, Object> _uis = new();
 
         private static readonly Dictionary<Type, string> _address = new()
         {
-            { typeof(MainMenuUI), AssetsAddressablesConstants.MAIN_MENU_SCREEN },
-            { typeof(InGameMenuUI), AssetsAddressablesConstants.IN_GAME_MENU_SCREEN },
-            { typeof(FoldingThePuzzlePuzzlesUI), AssetsAddressablesConstants.FOLDING_THE_PUZZLE_SCREEN },
+            { typeof(MainMenuUI), ResourcesPathsConstants.MAIN_MENU_SCREEN },
+            { typeof(InGameMenuUI), ResourcesPathsConstants.IN_GAME_MENU_SCREEN },
+            { typeof(FoldingThePuzzlePuzzlesUI), ResourcesPathsConstants.FOLDING_THE_PUZZLE_SCREEN }
         };
 
         public T? GetUI<T>() where T : Object
@@ -74,17 +67,17 @@ namespace Services.Factories.UIFactory
             _uis.Remove(typeof(T));
         }
 
-        private async Task<GameObject> Instance<T>() where T : Object
+        private Task<GameObject> Instance<T>() where T : Object
         {
             var type = typeof(T);
 
-            var prefab = await _assetsAddressableService.GetAsset<GameObject>(_address[type]);
+            var prefab = Resources.Load<GameObject>(_address[type]);
 
             var instance = Object.Instantiate(prefab);
-            
+
             Object.DontDestroyOnLoad(instance);
 
-            return instance;
+            return Task.FromResult(instance);
         }
     }
 }

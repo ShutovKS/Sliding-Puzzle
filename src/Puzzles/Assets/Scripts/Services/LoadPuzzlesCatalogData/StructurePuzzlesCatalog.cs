@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System;
+using System.Collections.Generic;
+
+#endregion
 
 namespace Services.LoadPuzzlesCatalogData
 {
-    [System.Serializable]
+    [Serializable]
     public class PuzzlesCatalogData
     {
         public List<Category> categories;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Category
     {
         public string id;
@@ -17,7 +22,7 @@ namespace Services.LoadPuzzlesCatalogData
         public List<Puzzle> puzzles;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Puzzle
     {
         public string id;

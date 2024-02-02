@@ -1,24 +1,23 @@
 ﻿#region
 
 using Infrastructure.ProjectStateMachine.Core;
-using Zenject;
 
 #endregion
 
 namespace Infrastructure.ProjectStateMachine.States
 {
-    public class BootstrapState : IState<Bootstrap>, IInitializable
+    public class BootstrapState : IState<Bootstrap>, IEnter
     {
         public BootstrapState(Bootstrap initializer)
         {
             Initializer = initializer;
         }
 
-        public void Initialize()
+        public Bootstrap Initializer { get; }
+
+        public void OnEnter()
         {
             Initializer.StateMachine.SwitchState<MainMenuState>();
         }
-
-        public Bootstrap Initializer { get; }
     }
 }

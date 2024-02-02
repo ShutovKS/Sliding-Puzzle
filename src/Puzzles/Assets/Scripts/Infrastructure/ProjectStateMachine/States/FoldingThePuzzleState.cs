@@ -39,7 +39,6 @@ namespace Infrastructure.ProjectStateMachine.States
         private Texture2D[,] _textures2D;
         private int _partsAmount;
         private bool _isStopTimer;
-        private bool _isPlayerMadeMove;
 
         public async Task OnInitialize()
         {
@@ -49,23 +48,21 @@ namespace Infrastructure.ProjectStateMachine.States
 
         public void OnEnter(PuzzleInformation puzzleInformation)
         {
-            _isPlayerMadeMove = false;
             _partsAmount = puzzleInformation.ElementsCount;
             _texture2D = puzzleInformation.Texture2D;
             _textures2D = null;
 
             if (puzzleInformation.Texture2D != null)
             {
-                _textures2D = ImageCutter.CutImage(_texture2D, ImageCutterType.NumberOfParts, _partsAmount, _partsAmount);
+                _textures2D =
+                    ImageCutter.CutImage(_texture2D, ImageCutterType.NumberOfParts, _partsAmount, _partsAmount);
             }
 
             _emptyPosition = new Vector2Int(_partsAmount - 1, 0);
             _currentPositions = GenerationPositions.GetRandomPositions(_partsAmount, _emptyPosition);
             _foldingThePuzzlePuzzlesUI.GameplayUI.SetActive(true);
 
-            SetUpGameOverUI();
-            SetUpImageSampleUI();
-            SetUpMenuUI();
+            SetUpUI();
 
             InitialisePiecesListTwoDimensional();
 
@@ -90,36 +87,16 @@ namespace Infrastructure.ProjectStateMachine.States
             _foldingThePuzzlePuzzlesUI = await _uiFactory.Created<FoldingThePuzzlePuzzlesUI>();
         }
 
-        private void SetUpGameOverUI()
+        private void SetUpUI()
         {
             _foldingThePuzzlePuzzlesUI.GameOverUI.SetImage(_texture2D);
             _foldingThePuzzlePuzzlesUI.GameOverUI.SetActive(false);
-        }
 
-        private void SetUpImageSampleUI()
-        {
             _foldingThePuzzlePuzzlesUI.ImageSampleUI.SetImageSample(_texture2D);
-        }
 
-        private void SetUpMenuUI()
-        {
             _foldingThePuzzlePuzzlesUI.MenuUI.OnBackClicked += ExitInMainMenu;
             _foldingThePuzzlePuzzlesUI.MenuUI.OnResetClicked += ResetParts;
             _onTimerUpdate += _foldingThePuzzlePuzzlesUI.MenuUI.UpdateTimer;
-        }
-
-        private void OnAllPartsInPlace()
-        {
-            Debug.Log("Win");
-            if (_isPlayerMadeMove == false)
-            {
-                OnExit();   
-                OnEnter(new PuzzleInformation(null, _texture2D, _partsAmount));
-                return;
-            }
-
-            _foldingThePuzzlePuzzlesUI.GameplayUI.SetActive(false);
-            _foldingThePuzzlePuzzlesUI.GameOverUI.SetActive(true);
         }
 
         #endregion
@@ -151,6 +128,14 @@ namespace Infrastructure.ProjectStateMachine.States
             _timerWatch.Restart();
         }
 
+        private void MovePart(Vector2Int currentPosition)
+        {
+            if (_piecesListTwoDimensional.TryMovePiece(currentPosition, out var newPosition))
+            {
+                _foldingThePuzzlePuzzlesUI.GameplayUI.MovePart(currentPosition, newPosition, _partsAmount);
+            }
+        }
+
         private void RemoveAllParts()
         {
             var position = new Vector2Int(0, 0);
@@ -173,15 +158,6 @@ namespace Infrastructure.ProjectStateMachine.States
             _piecesListTwoDimensional.RemovePiece(position);
         }
 
-        private void MovePart(Vector2Int currentPosition)
-        {
-            _isPlayerMadeMove = true;
-            if (_piecesListTwoDimensional.TryMovePiece(currentPosition, out var newPosition))
-            {
-                _foldingThePuzzlePuzzlesUI.GameplayUI.MovePart(currentPosition, newPosition, _partsAmount);
-            }
-        }
-
         #endregion
 
         #region Other
@@ -189,7 +165,6 @@ namespace Infrastructure.ProjectStateMachine.States
         private void InitialisePiecesListTwoDimensional()
         {
             _piecesListTwoDimensional = new PiecesListTwoDimensional(_partsAmount, _partsAmount);
-            _piecesListTwoDimensional.OnAllPartsInPlace += OnAllPartsInPlace;
 
             for (var y = 0; y < _partsAmount; y++)
             for (var x = 0; x < _partsAmount; x++)
@@ -198,13 +173,33 @@ namespace Infrastructure.ProjectStateMachine.States
 
                 var targetPosition = new Vector2Int(x, y);
                 var piece = new Piece(targetPosition, currentPosition);
+                Debug.Log(
+                    $"TargetPosition: {targetPosition.x}/{targetPosition.y}, CurrentPosition: {currentPosition.x}/{currentPosition.y}");
                 _piecesListTwoDimensional.AddPiece(piece);
+            }
+
+            if (_piecesListTwoDimensional.IsAllPartsInPlace == false)
+            {
+                _piecesListTwoDimensional.OnAllPartsInPlace += OnAllPartsInPlace;
+            }
+            else
+            {
+                OnExit();
+                OnEnter(new PuzzleInformation(null, _texture2D, _partsAmount));
             }
         }
 
         private void ExitInMainMenu()
         {
             Initializer.StateMachine.SwitchState<MainMenuState>();
+        }
+
+        private void OnAllPartsInPlace()
+        {
+            Debug.Log("Win");
+
+            _foldingThePuzzlePuzzlesUI.GameplayUI.SetActive(false);
+            _foldingThePuzzlePuzzlesUI.GameOverUI.SetActive(true);
         }
 
         private void Clear()

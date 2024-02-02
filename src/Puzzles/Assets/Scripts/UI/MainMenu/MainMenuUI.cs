@@ -3,7 +3,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 #endregion
@@ -29,7 +28,7 @@ namespace UI.MainMenu
 
         [Header("Levels")] [SerializeField] private GameObject levelPrefab;
         [SerializeField] private Transform levelsContent;
-        [SerializeField, Range(1, 9)] private int levelCount = 8;
+        [SerializeField] [Range(1, 9)] private int levelCount = 8;
         [SerializeField] private int startRangeLevel = 2;
         private const int COLUMN_COUNT = 3;
         private const float INDENTATION_LEVEL_BUTTON = 0.025f;
@@ -41,10 +40,10 @@ namespace UI.MainMenu
             instructionsButton.onClick.AddListener(() => OnInstructionsClicked?.Invoke());
             exitButton.onClick.AddListener(() => OnExitClicked?.Invoke());
 
-#if UNITY_WEBGL	
+#if UNITY_WEBGL
             exitButton.gameObject.SetActive(false);
 #endif
-            
+
             for (var number = startRangeLevel; number < startRangeLevel + levelCount; number++)
             {
                 var numberLevel = number;
