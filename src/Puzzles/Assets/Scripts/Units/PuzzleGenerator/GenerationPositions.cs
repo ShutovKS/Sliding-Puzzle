@@ -45,7 +45,9 @@ namespace Units.PuzzleGenerator
                     newPosition.y < 0 ||
                     newPosition.x >= elementsAmount ||
                     newPosition.y >= elementsAmount)
+                {
                     continue;
+                }
 
                 (positions[oldPositions.y, oldPositions.x], positions[newPosition.y, newPosition.x]) = (
                     positions[newPosition.y, newPosition.x], positions[oldPositions.y, oldPositions.x]);
@@ -68,7 +70,7 @@ namespace Units.PuzzleGenerator
                     }
                 }
             }
-            
+
             return false;
         }
     }
