@@ -53,3 +53,5 @@ MIT License
 ![Скриншот 6](../../resources/screenshots/screenshot_6.png)
 
 ![Скриншот 7](../../resources/screenshots/screenshot_7.png)
+
+![Скриншот 8](../../resources/screenshots/screenshot_8.png)
