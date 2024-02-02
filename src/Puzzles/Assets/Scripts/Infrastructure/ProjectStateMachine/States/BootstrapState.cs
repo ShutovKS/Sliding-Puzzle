@@ -6,18 +6,18 @@ using Infrastructure.ProjectStateMachine.Core;
 
 namespace Infrastructure.ProjectStateMachine.States
 {
-    public class BootstrapState : IState<Bootstrap>
+    public class BootstrapState : IState<Bootstrap>, IEnter
     {
         public BootstrapState(Bootstrap initializer)
         {
             Initializer = initializer;
         }
 
-        public void Initialize()
+        public Bootstrap Initializer { get; }
+
+        public void OnEnter()
         {
             Initializer.StateMachine.SwitchState<MainMenuState>();
         }
-
-        public Bootstrap Initializer { get; }
     }
 }

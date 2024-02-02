@@ -12,7 +12,7 @@ namespace Infrastructure.ProjectStateMachine
 {
     public class Bootstrap : MonoBehaviour
     {
-        public Bootstrap()
+        public void Start()
         {
             IUIFactory uiFactory = new UIFactory();
             ILoadPuzzlesCatalogData loadPuzzlesCatalogData = new LoadPuzzlesCatalogData();
@@ -27,6 +27,6 @@ namespace Infrastructure.ProjectStateMachine
             StateMachine.SwitchState<BootstrapState>();
         }
 
-        public readonly StateMachine<Bootstrap> StateMachine;
+        public StateMachine<Bootstrap> StateMachine { get; private set; }
     }
 }
