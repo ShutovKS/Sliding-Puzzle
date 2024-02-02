@@ -36,7 +36,7 @@ namespace UI.FoldingThePuzzle
                 instantiate.SetActive(true);
                 var cellUI = instantiate.GetComponent<CellUI>();
 
-                cellUI.Image.color = new Color(1f, 1f, 1f, 0.78f);
+                // cellUI.Image.color = new Color(1f, 1f, 1f, 0.78f);
 
                 var rectTransformComponent = cellUI.RectTransform;
 
