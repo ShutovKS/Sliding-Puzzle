@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,13 +13,14 @@ using Object = UnityEngine.Object;
 namespace UI.FoldingThePuzzle
 {
     [Serializable]
-    public class GameplayUI
+    public class Gameplay
     {
         [SerializeField] private GameObject partsPanel;
         [SerializeField] private GameObject panel;
+        [SerializeField] private GameObject cellPrefab;
 
-        private Dictionary<GameObject, Vector2Int> _buttonsInstanceToVectorDictionary;
-        private Dictionary<Vector2Int, GameObject> _vectorToButtonsInstanceDictionary;
+        private Dictionary<CellUI, Vector2Int> _cellsInstanceToVectorDictionary = new();
+        private Dictionary<Vector2Int, CellUI> _vectorToCellsInstanceDictionary = new();
 
         public void SetActive(bool value)
         {
@@ -27,27 +29,18 @@ namespace UI.FoldingThePuzzle
 
         public void CreatedParts(int elementsAmount)
         {
-            var resources = new DefaultControls.Resources();
-
-            _vectorToButtonsInstanceDictionary =
-                new Dictionary<Vector2Int, GameObject>(elementsAmount * elementsAmount);
-
-            _buttonsInstanceToVectorDictionary =
-                new Dictionary<GameObject, Vector2Int>(elementsAmount * elementsAmount);
-
             for (var y = 0; y < elementsAmount; y++)
             for (var x = 0; x < elementsAmount; x++)
             {
+                var instantiate = Object.Instantiate(cellPrefab, partsPanel.transform);
+                instantiate.SetActive(true);
+                var cellUI = instantiate.GetComponent<CellUI>();
+
+                cellUI.Image.color = new Color(1f, 1f, 1f, 0.78f);
+
+                var rectTransformComponent = cellUI.RectTransform;
+
                 var position = new Vector2Int(x, y);
-
-                var buttonGo = DefaultControls.CreateButton(resources);
-                buttonGo.GetComponentInChildren<Text>().enabled = false;
-                buttonGo.transform.SetParent(partsPanel.transform);
-
-                buttonGo.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.78f);
-
-                var rectTransformComponent = buttonGo.GetComponent<RectTransform>();
-
                 rectTransformComponent.anchorMin = new Vector2(
                     (float)position.x / elementsAmount,
                     (float)position.y / elementsAmount);
@@ -61,45 +54,56 @@ namespace UI.FoldingThePuzzle
 
                 rectTransformComponent.localScale = Vector3.one;
 
-                _vectorToButtonsInstanceDictionary.Add(position, buttonGo);
-                _buttonsInstanceToVectorDictionary.Add(buttonGo, position);
+                try // Почему то иногда возникает ошибка, повторяется позиция и выдаёт исключение, что такой ключ уже есть (1 из 10 попыток)
+                {
+                    _cellsInstanceToVectorDictionary.Add(cellUI, position);
+                    _vectorToCellsInstanceDictionary.Add(position, cellUI);
+                }
+                catch (Exception e) // Костыль: просто перезапускае метод
+                {
+                    Debug.Log(e);
+                    Object.Destroy(instantiate);
+                    Clear();
+                    CreatedParts(elementsAmount);
+                    return;
+                }
             }
         }
 
         public void RemovePart(Vector2Int position)
         {
-            if (!_vectorToButtonsInstanceDictionary.TryGetValue(position, out var partInstance))
+            if (!_vectorToCellsInstanceDictionary.TryGetValue(position, out var cellUI))
             {
                 return;
             }
 
-            Object.Destroy(partInstance);
-            _vectorToButtonsInstanceDictionary.Remove(position);
-            _buttonsInstanceToVectorDictionary.Remove(partInstance);
+            Object.Destroy(cellUI.GameObject);
+
+            _vectorToCellsInstanceDictionary.Remove(position);
+            _cellsInstanceToVectorDictionary.Remove(cellUI);
         }
 
         public void MovePart(Vector2Int oldPosition, Vector2Int newPosition, int elementsAmount)
         {
-            var priceInstance = _vectorToButtonsInstanceDictionary[oldPosition];
+            var priceInstance = _vectorToCellsInstanceDictionary[oldPosition];
 
-            var rectTransform = priceInstance.GetComponent<RectTransform>();
+            var rectTransform = priceInstance.RectTransform;
+
             rectTransform.anchorMin = new Vector2(newPosition.x, newPosition.y) / elementsAmount;
-
             rectTransform.anchorMax = new Vector2(newPosition.x + 1, newPosition.y + 1) / elementsAmount;
 
             rectTransform.offsetMin = new Vector2(0, 0);
             rectTransform.offsetMax = new Vector2(0, 0);
 
-            _vectorToButtonsInstanceDictionary[newPosition] = priceInstance;
-            _buttonsInstanceToVectorDictionary[priceInstance] = newPosition;
+            _vectorToCellsInstanceDictionary[newPosition] = priceInstance;
+            _cellsInstanceToVectorDictionary[priceInstance] = newPosition;
         }
 
         public void RegisteringButtonsEvents(UnityAction<Vector2Int> buttonClick)
         {
-            foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary)
+            foreach (var (_, cellUI) in _vectorToCellsInstanceDictionary)
             {
-                buttonInstance.GetComponent<Button>().onClick.AddListener(() =>
-                    buttonClick?.Invoke(_buttonsInstanceToVectorDictionary[buttonInstance]));
+                cellUI.Button.onClick.AddListener(() => buttonClick?.Invoke(_cellsInstanceToVectorDictionary[cellUI]));
             }
         }
 
@@ -117,7 +121,7 @@ namespace UI.FoldingThePuzzle
                     new Vector2(0.5f, 0.5f));
 
                 var currentPosition = currentsPositions[y, x];
-                _vectorToButtonsInstanceDictionary[currentPosition].GetComponent<Image>().sprite = sprite;
+                _vectorToCellsInstanceDictionary[currentPosition].Image.sprite = sprite;
             }
         }
 
@@ -130,27 +134,25 @@ namespace UI.FoldingThePuzzle
             for (var x = 0; x < elementsAmount; x++)
             {
                 var currentPosition = currentsPositions[y, x];
-                var textComponent = _vectorToButtonsInstanceDictionary[currentPosition].GetComponentInChildren<Text>();
-
-                textComponent.enabled = true;
-                textComponent.text = $"{number}";
-                textComponent.resizeTextForBestFit = true;
-                textComponent.resizeTextMaxSize = 240;
+                _vectorToCellsInstanceDictionary[currentPosition].Text.text = $"{number}";
                 number++;
             }
         }
 
         public void Clear()
         {
-            if (_vectorToButtonsInstanceDictionary != null)
+            if (_vectorToCellsInstanceDictionary != null)
             {
-                foreach (var (_, buttonInstance) in _vectorToButtonsInstanceDictionary)
+                foreach (var (_, buttonInstance) in _vectorToCellsInstanceDictionary)
                 {
-                    Object.Destroy(buttonInstance);
+                    Object.Destroy(buttonInstance.GameObject);
                 }
 
-                _buttonsInstanceToVectorDictionary.Clear();
-                _vectorToButtonsInstanceDictionary.Clear();
+                _cellsInstanceToVectorDictionary.Clear();
+                _vectorToCellsInstanceDictionary.Clear();
+
+                _cellsInstanceToVectorDictionary = new Dictionary<CellUI, Vector2Int>();
+                _vectorToCellsInstanceDictionary = new Dictionary<Vector2Int, CellUI>();
             }
         }
     }
